@@ -22,9 +22,12 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from '@chakra-ui/icons'
+import auth from '@/firebase/config'
+import { useAuthState } from 'react-firebase-hooks/auth'
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure()
+  const [user, loading, error] = useAuthState(auth);
 
   return (
     <Box>
@@ -62,7 +65,7 @@ export default function WithSubnavigation() {
           </Flex>
         </Flex>
 
-        <Stack
+        {user == null && <Stack
           flex={{ base: 1, md: 0 }}
           justify={'flex-end'}
           direction={'row'}
@@ -83,8 +86,15 @@ export default function WithSubnavigation() {
             }}>
             Sign Up
           </Button>
-        </Stack>
+        </Stack>}
+
+        {user != null && (
+          <Flex justify={{ base: 'end'}}>
+            {auth.currentUser.displayName ? auth.currentUser.displayName : auth.currentUser.email}
+          </Flex>
+        )}
       </Flex>
+          
 
       <Collapse in={isOpen} animateOpacity>
         <MobileNav />
