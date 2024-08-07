@@ -1,4 +1,5 @@
 'use client'
+import { LoginButton } from '@/components/GoogleLogin';
 import signUp from '@/firebase/auth/signup';
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
@@ -67,6 +68,9 @@ function Page() {
           >
             Sign up
           </button>
+          <div className="mt-5">
+            <LoginButton />
+          </div>
         </form>
       </div>
     </div>
