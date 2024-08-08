@@ -8,10 +8,10 @@ function Page() {
     const router = useRouter()
 
     React.useEffect(() => {
-        if (user == null) router.push("/")
+        if (user == null) router.push("/sign-in")
     }, [user])
 
-    return (<h1>Only logged in users can view this page</h1>);
+    return (<h1>our super cool dashboard</h1>);
 }
 
 export default Page;
