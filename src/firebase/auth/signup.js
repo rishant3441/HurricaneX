@@ -1,4 +1,4 @@
-import auth from "../config";
+import { auth } from "../config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 // Function to sign up a user with email and password

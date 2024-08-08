@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { addDoc, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -12,23 +12,24 @@ const firebaseConfig = {
   measurementId: "G-EYPEZ0ZCT3"
 };
 
-let firebase_app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-let auth = getAuth();
+const firebase_app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-export default auth;
+export const auth = getAuth();
 
 export const db = getFirestore()
 
-auth.onAuthStateChanged(async user => {
+onAuthStateChanged(auth, async (user) => {
+  console.log(user === null)
   if (user)
   {
     try {
       const docRef = await addDoc(collection(db, "Users"), {
         uid: user.uid
       });
+      console.log("Document written with ID: ", docRef.id);
     }
     catch (e) {
-
+      console.error("Error adding document: ", e);
     }
   }
 })

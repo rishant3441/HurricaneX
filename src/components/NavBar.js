@@ -22,7 +22,7 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from '@chakra-ui/icons'
-import auth from '@/firebase/config'
+import { auth } from '@/firebase/config'
 import { useAuthState } from 'react-firebase-hooks/auth'
 
 export default function WithSubnavigation() {
