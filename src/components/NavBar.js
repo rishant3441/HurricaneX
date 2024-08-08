@@ -89,9 +89,14 @@ export default function WithSubnavigation() {
         </Stack>}
 
         {user != null && (
-          <Flex justify={{ base: 'end'}}>
-            {auth.currentUser.displayName ? auth.currentUser.displayName : auth.currentUser.email}
-          </Flex>
+          <Stack flex={{ base:1, md: 0}} justify={'flex-end'} direction={'row'} spacing={6}>
+            <Flex justify={{ base: 'end'}}>
+              {auth.currentUser.displayName ? auth.currentUser.displayName : auth.currentUser.email}
+            </Flex>
+            <Button onClick={() => auth.signOut()} fontSize={'sm'} fontWeight={400} variant={'link'} href="/">
+              Sign Out
+            </Button>
+          </Stack>
         )}
       </Flex>
           

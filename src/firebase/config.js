@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { addDoc, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCn0EZnyOdhZafBN4ncIEej9YSP34k7ZTI",
@@ -15,3 +16,19 @@ let firebase_app = getApps().length === 0 ? initializeApp(firebaseConfig) : getA
 let auth = getAuth();
 
 export default auth;
+
+export const db = getFirestore()
+
+auth.onAuthStateChanged(async user => {
+  if (user)
+  {
+    try {
+      const docRef = await addDoc(collection(db, "Users"), {
+        uid: user.uid
+      });
+    }
+    catch (e) {
+
+    }
+  }
+})
