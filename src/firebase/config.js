@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, initializeAuth, indexedDBLocalPersistence } from "firebase/auth";
 import { addDoc, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -14,7 +14,7 @@ const firebaseConfig = {
 
 const firebase_app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-export const auth = getAuth();
+export const auth = initializeAuth(firebase_app, { persistence: indexedDBLocalPersistence });
 
 export const db = getFirestore()
 
