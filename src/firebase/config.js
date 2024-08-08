@@ -12,24 +12,8 @@ const firebaseConfig = {
   measurementId: "G-EYPEZ0ZCT3"
 };
 
-const firebase_app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+export const firebase_app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
 export const auth = initializeAuth(firebase_app, { persistence: indexedDBLocalPersistence });
 
-export const db = getFirestore()
-
-onAuthStateChanged(auth, async (user) => {
-  console.log(user === null)
-  if (user)
-  {
-    try {
-      const docRef = await addDoc(collection(db, "Users"), {
-        uid: user.uid
-      });
-      console.log("Document written with ID: ", docRef.id);
-    }
-    catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  }
-})
+export const db = getFirestore(firebase_app)
