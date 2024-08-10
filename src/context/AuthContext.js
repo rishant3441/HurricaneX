@@ -5,10 +5,8 @@ import {
     onAuthStateChanged,
     getAuth,
 } from 'firebase/auth';
-import { db, firebase_app } from '@/firebase/config';
+import { auth, db, firebase_app } from '@/firebase/config';
 import addData from '@/firebase/addData';
-
-const auth = getAuth(firebase_app);
 
 export const AuthContext = React.createContext({});
 
