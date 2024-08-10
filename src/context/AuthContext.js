@@ -7,6 +7,7 @@ import {
 } from 'firebase/auth';
 import { auth, db, firebase_app } from '@/firebase/config';
 import addData from '@/firebase/addData';
+import { BeatLoader } from 'react-spinners';
 
 export const AuthContext = React.createContext({});
 
@@ -32,9 +33,11 @@ export const AuthContextProvider = ({
         return () => unsubscribe();
     }, []);
 
+    const style = { position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
+
     return (
         <AuthContext.Provider value={{ user }}>
-            {loading ? <div>Loading...</div> : children}
+            {loading ?  <BeatLoader cssOverride={style} />: children}
         </AuthContext.Provider>
     );
 };
