@@ -16,6 +16,7 @@ import {
   useBreakpointValue,
   useDisclosure,
   Link,
+  Image,
 } from '@chakra-ui/react'
 import {
   HamburgerIcon,
@@ -59,7 +60,9 @@ export default function WithSubnavigation() {
             fontFamily={'heading'}
             color={useColorModeValue('gray.800', 'white')}
             href="/">
-            Logo
+            <Box width="30px" height="30px">
+              <Image src="/logo.png" alt="Logo" />
+            </Box>
           </Link>
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
