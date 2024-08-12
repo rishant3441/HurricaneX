@@ -3,7 +3,6 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Map, { Layer, Source } from "react-map-gl";
-
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { BeatLoader } from "react-spinners";
 
@@ -14,6 +13,8 @@ function Page() {
   const [data, setData] = useState(null);
   const [hoverInfo, setHoverInfo] = useState(null);
   const [selectedInfo, setSelectedInfo] = useState(null);
+  const [showAlerts, setShowAlerts] = useState(true); // State for toggling alerts
+  const [isControlOpen, setControlOpen] = useState(false); // State for collapsible control
 
   useEffect(() => {
     if (user == null) router.push("/sign-in");
@@ -72,7 +73,7 @@ function Page() {
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', height: 'calc(100vh - 60px)' }}>
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         initialViewState={{
@@ -80,17 +81,51 @@ function Page() {
           longitude: -80.352,
           zoom: 9.24
         }}
-        style={{ width: '70vw', height: '100vh' }}
+        style={{ width: '70vw', height: '100%' }}
         mapStyle="mapbox://styles/mapbox/streets-v12"
         interactiveLayerIds={['nhc-filled']}
         onMouseMove={onHover}
         onClick={onClick}
       >
-        <Source id="nhc" type="geojson" data={data}>
-          <Layer {...layerStyle} />
-        </Source>
+        {showAlerts && data && (
+          <Source id="nhc" type="geojson" data={data}>
+            <Layer {...layerStyle} />
+          </Source>
+        )}
+        {/* Collapsible control */}
+        <div style={{
+          position: 'absolute',
+          top: '10px',
+          left: '10px',
+          backgroundColor: '#ffffff',
+          border: '1px solid #ccc',
+          borderRadius: '4px',
+          padding: '5px',
+          boxShadow: '0 0 5px rgba(0,0,0,0.3)',
+          zIndex: 1,
+          width: '200px'
+        }}>
+          <button
+            onClick={() => setControlOpen(!isControlOpen)}
+            style={{ width: '100%', marginBottom: '5px', padding: '5px', border: 'none', backgroundColor: '#007bff', color: '#ffffff', borderRadius: '4px' }}
+          >
+            {isControlOpen ? 'Hide Controls' : 'Show Controls'}
+          </button>
+          {isControlOpen && (
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={showAlerts}
+                  onChange={() => setShowAlerts(!showAlerts)}
+                />
+                Show Alerts
+              </label>
+            </div>
+          )}
+        </div>
       </Map>
-      <div style={{ width: '30vw', height: '100vh', padding: '10px', overflowY: 'auto', backgroundColor: '#f5f5f5' }}>
+      <div style={{ width: '30vw', height: '100%', padding: '10px', overflowY: 'auto', backgroundColor: '#f5f5f5' }}>
         {(selectedInfo || hoverInfo) && (
           <div>
             <h3>
