@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import Map, { Layer, Source, Popup } from "react-map-gl";
+import Map, { Layer, Source } from "react-map-gl";
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { BeatLoader } from "react-spinners";
@@ -13,6 +13,7 @@ function Page() {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [hoverInfo, setHoverInfo] = useState(null);
+  const [selectedInfo, setSelectedInfo] = useState(null);
 
   useEffect(() => {
     if (user == null) router.push("/sign-in");
@@ -41,6 +42,13 @@ function Page() {
     setHoverInfo(hoveredFeature && { feature: hoveredFeature, x, y });
   }, []);
 
+  const onClick = useCallback(event => {
+    const { features } = event;
+    const clickedFeature = features && features[0];
+
+    setSelectedInfo(clickedFeature && { feature: clickedFeature });
+  }, []);
+
   if (isLoading) return <BeatLoader cssOverride={style} />;
 
   const layerStyle = {
@@ -53,7 +61,7 @@ function Page() {
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex' }}>
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         initialViewState={{
@@ -61,27 +69,24 @@ function Page() {
           longitude: -80.352,
           zoom: 9.24
         }}
-        style={{ width: 600, height: 400 }}
+        style={{ width: '70vw', height: '100vh' }}
         mapStyle="mapbox://styles/mapbox/streets-v12"
         interactiveLayerIds={['nhc-filled']}
         onMouseMove={onHover}
+        onClick={onClick}
       >
         <Source id="nhc" type="geojson" data={data}>
           <Layer {...layerStyle} />
         </Source>
-        {hoverInfo && (
-          <Popup longitude={hoverInfo.feature.geometry.coordinates[0][0][0]} latitude={hoverInfo.feature.geometry.coordinates[0][0][1]}
-            closeButton={false}
-            offsetTop={-10}>
-            <div>
-              <strong>Alert:</strong> {hoverInfo.feature.properties.headline}
-            </div>
-            <div>
-              <strong>Description:</strong> {hoverInfo.feature.properties.description}
-            </div>
-          </Popup>
-        )}
       </Map>
+      <div style={{ width: '30vw', height: '100vh', padding: '10px', overflowY: 'auto', backgroundColor: '#f5f5f5' }}>
+        {(selectedInfo || hoverInfo) && (
+          <div>
+            <h3>Alert: {(selectedInfo || hoverInfo).feature.properties.headline}</h3>
+            <p>Description: {(selectedInfo || hoverInfo).feature.properties.description}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
