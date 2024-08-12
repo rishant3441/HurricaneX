@@ -2,6 +2,7 @@
 import { LoginButton } from '@/components/GoogleLogin';
 import signUp from '@/firebase/auth/signup';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useState } from "react";
 
 function Page() {
@@ -70,6 +71,14 @@ function Page() {
           </button>
           <div className="mt-5">
             <LoginButton />
+          </div>
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-600">
+              Already have an account?{' '}
+              <Link href="/sign-in" className="text-blue-500 hover:text-blue-700">
+                  Sign in!
+              </Link>
+            </p>
           </div>
         </form>
       </div>

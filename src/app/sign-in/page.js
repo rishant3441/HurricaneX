@@ -2,33 +2,32 @@
 import { LoginButton } from '@/components/GoogleLogin';
 import signIn from '@/firebase/auth/signin';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useState } from "react";
 
 function Page() {
-  const [ email, setEmail ] = useState( '' );
-  const [ password, setPassword ] = useState( '' );
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const router = useRouter();
 
   // Handle form submission
-  const handleForm = async ( event ) => {
+  const handleForm = async (event) => {
     event.preventDefault();
 
     // Attempt to sign in with provided email and password
-    const { result, error } = await signIn( email, password );
+    const { result, error } = await signIn(email, password);
 
-    if ( error ) {
+    if (error) {
       // Display and log any sign-in errors
-      console.log( error );
+      console.log(error);
       return;
     }
 
     // Sign in successful
-    console.log( result );
+    console.log(result);
 
     // Redirect to the admin page
-    // Typically you would want to redirect them to a protected page an add a check to see if they are admin or 
-    // create a new page for admin
-    router.push( "/" );
+    router.push("/");
   }
 
   return (
@@ -41,7 +40,7 @@ function Page() {
               Email
             </label>
             <input
-              onChange={( e ) => setEmail( e.target.value )}
+              onChange={(e) => setEmail(e.target.value)}
               required
               type="email"
               name="email"
@@ -55,7 +54,7 @@ function Page() {
               Password
             </label>
             <input
-              onChange={( e ) => setPassword( e.target.value )}
+              onChange={(e) => setPassword(e.target.value)}
               required
               type="password"
               name="password"
@@ -74,6 +73,14 @@ function Page() {
           </div>
           <div className="mt-5">
             <LoginButton />
+          </div>
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-600">
+              Don't have an account?{' '}
+              <Link href="/sign-up" className="text-blue-500 hover:text-blue-700">
+                  Sign up!
+              </Link>
+            </p>
           </div>
         </form>
       </div>
