@@ -303,5 +303,9 @@ const NAV_ITEMS = [
   {
     label: 'Tips',
     href: '/tips'
+  }, 
+  {
+    label: 'Checklist',
+    href: '/checklist'
   }
 ]
