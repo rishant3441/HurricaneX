@@ -13,7 +13,6 @@ function Page() {
 
   useEffect(() => {
     if (user == null) {
-      router.push('/sign-in');
     } else {
       setLoading(false);
     }
