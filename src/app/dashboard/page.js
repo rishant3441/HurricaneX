@@ -60,6 +60,17 @@ function Page() {
     }
   };
 
+  const alertStyle = {
+    fontWeight: 'bold',
+    textDecoration: 'underline',
+    color: 'red'
+  };
+
+  const descriptionStyle = {
+    fontWeight: 'bold',
+    textDecoration: 'underline'
+  };
+
   return (
     <div style={{ display: 'flex' }}>
       <Map
@@ -82,8 +93,14 @@ function Page() {
       <div style={{ width: '30vw', height: '100vh', padding: '10px', overflowY: 'auto', backgroundColor: '#f5f5f5' }}>
         {(selectedInfo || hoverInfo) && (
           <div>
-            <h3>Alert: {(selectedInfo || hoverInfo).feature.properties.headline}</h3>
-            <p>Description: {(selectedInfo || hoverInfo).feature.properties.description}</p>
+            <h3>
+              <span style={alertStyle}>Alert: </span>
+              {(selectedInfo || hoverInfo).feature.properties.headline}
+            </h3>
+            <p>
+              <span style={descriptionStyle}>Description: </span>
+              {(selectedInfo || hoverInfo).feature.properties.description}
+            </p>
           </div>
         )}
       </div>
