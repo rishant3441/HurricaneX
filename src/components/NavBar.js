@@ -299,5 +299,9 @@ const NAV_ITEMS = [
   {
     label: 'Dashboard',
     href: '/dashboard'
+  },
+  {
+    label: 'Tips',
+    href: '/tips'
   }
 ]
