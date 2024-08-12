@@ -27,7 +27,7 @@ function Page() {
     console.log( result );
 
     // Redirect to the admin page
-    router.push( "/" );
+    router.push( "/dashboard" );
   }
 
   return (

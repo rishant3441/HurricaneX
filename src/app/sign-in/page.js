@@ -27,7 +27,13 @@ function Page() {
     console.log(result);
 
     // Redirect to the admin page
+<<<<<<< HEAD
     router.push("/");
+=======
+    // Typically you would want to redirect them to a protected page an add a check to see if they are admin or 
+    // create a new page for admin
+    router.push( "/dashboard" );
+>>>>>>> 7066048d079bb890bf1a52b0326610a084779361
   }
 
   return (
