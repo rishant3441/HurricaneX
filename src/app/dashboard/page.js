@@ -74,6 +74,7 @@ function Page() {
   };
 
   return (
+    <div>
     <div style={{ display: 'flex', height: 'calc(100vh - 60px)' }}>
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
@@ -82,7 +83,7 @@ function Page() {
           longitude: -80.352,
           zoom: 9.24
         }}
-        style={{ width: '70vw', height: '100%' }}
+        style={{ width: '70vw', height: '70vw' }}
         mapStyle="mapbox://styles/mapbox/streets-v12"
         interactiveLayerIds={['nhc-filled']}
         onMouseMove={onHover}
@@ -126,7 +127,7 @@ function Page() {
           )}
         </div>
       </Map>
-      <div style={{ width: '30vw', height: '100%', padding: '10px', overflowY: 'auto', backgroundColor: '#f5f5f5' }}>
+      <div style={{ width: '30vw', height: '70vw', padding: '10px', overflowY: 'auto', backgroundColor: '#f5f5f5' }}>
         {(selectedInfo || hoverInfo) && (
           <div>
             <h3>
@@ -140,6 +141,7 @@ function Page() {
           </div>
         )}
       </div>
+    </div>
     <GoogleMap />
     </div>
   );
