@@ -74,7 +74,7 @@ function Page() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col">
     <div style={{ display: 'flex', height: 'calc(100vh - 60px)' }}>
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
@@ -142,7 +142,7 @@ function Page() {
         )}
       </div>
     </div>
-    <GoogleMap />
+    <GoogleMap className="flex" />
     </div>
   );
 }
