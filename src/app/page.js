@@ -54,7 +54,7 @@ export default function CallToActionWithVideo() {
           </Heading>
           <Text color={'gray.500'}>
             HurricaneX is a hurricane safety system designed to help you and your family manage the things you need to stay safe.
-            With prep tips and supply info prior and during the hurricane, we try to ensure your family's safety. All for free!
+            With prep tips and supply info prior and during the hurricane, we try to ensure your family&apos;s safety. All for free!
           </Text>
           <Stack spacing={{ base: 4, sm: 6 }} direction={{ base: 'column', sm: 'row' }}>
             {auth.currentUser === null && (

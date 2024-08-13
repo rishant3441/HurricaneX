@@ -141,7 +141,7 @@ const HurricaneSafetyGuide = () => {
           <li>
             <strong>Stay safe:</strong> Avoid buildings if you smell gas, if
             floodwaters remain around the building, or if the building was
-            damaged by fire and authorities haven't declared it safe. Never use
+            damaged by fire and authorities haven&apos;t declared it safe. Never use
             a portable generator inside your home or garage. Use battery-powered
             flashlights instead of candles.
           </li>
