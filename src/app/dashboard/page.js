@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Map, { Layer, Source } from "react-map-gl";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { BeatLoader } from "react-spinners";
+import GoogleMap from "@/components/GoogleMap";
 
 function Page() {
   const { user } = useAuthContext();
@@ -139,6 +140,7 @@ function Page() {
           </div>
         )}
       </div>
+    <GoogleMap />
     </div>
   );
 }

@@ -17,6 +17,7 @@
     "@react-google-maps/api": "^2.19.3",
     "@react-oauth/google": "^0.12.1",
     "@types/mapbox-gl": "^3.4.0",
+    "@vis.gl/react-google-maps": "^1.1.0",
     "firebase": "^10.12.5",
     "firebaseui": "^6.1.0",
     "framer-motion": "^11.3.23",
