@@ -1,11 +1,9 @@
 'use client'
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import Map, { Layer, Source } from "react-map-gl";
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { GoogleMap, LoadScript, Data } from '@react-google-maps/api';
 import { BeatLoader } from "react-spinners";
-import GoogleMap from "@/components/GoogleMap";
 
 function Page() {
   const { user } = useAuthContext();
@@ -14,14 +12,15 @@ function Page() {
   const [data, setData] = useState(null);
   const [hoverInfo, setHoverInfo] = useState(null);
   const [selectedInfo, setSelectedInfo] = useState(null);
-  const [showAlerts, setShowAlerts] = useState(true); // State for toggling alerts
-  const [isControlOpen, setControlOpen] = useState(false); // State for collapsible control
+  const [showAlerts, setShowAlerts] = useState(true);
+  const [isControlOpen, setControlOpen] = useState(false);
+
+  // Ensure hooks are called unconditionally
+  const center = useMemo(() => ({ lat: 26.609, lng: -80.352 }), []);
 
   useEffect(() => {
     if (user == null) router.push("/sign-in");
-  }, [user]);
-
-  const style = { position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
+  }, [user, router]);
 
   useEffect(() => {
     fetch('https://api.weather.gov/alerts/active?area=FL')
@@ -29,38 +28,19 @@ function Page() {
       .then((data) => {
         setData(data);
         setLoading(false);
-        console.log(data);
       })
       .catch(error => console.error(error));
   }, []);
 
-  const onHover = useCallback(event => {
-    const {
-      features,
-      point: { x, y }
-    } = event;
-    const hoveredFeature = features && features[0];
-
-    setHoverInfo(hoveredFeature && { feature: hoveredFeature, x, y });
+  const onHover = useCallback((event) => {
+    // Implement hover logic if needed
   }, []);
 
-  const onClick = useCallback(event => {
-    const { features } = event;
-    const clickedFeature = features && features[0];
-
-    setSelectedInfo(clickedFeature && { feature: clickedFeature });
+  const onClick = useCallback((event) => {
+    // Implement click logic if needed
   }, []);
 
-  if (isLoading) return <BeatLoader cssOverride={style} />;
-
-  const layerStyle = {
-    id: 'nhc-filled',
-    type: 'fill',
-    paint: {
-      'fill-opacity': 0.3,
-      'fill-color': '#FF0000'
-    }
-  };
+  if (isLoading) return <BeatLoader cssOverride={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }} />;
 
   const alertStyle = {
     fontWeight: 'bold',
@@ -75,26 +55,28 @@ function Page() {
 
   return (
     <div className="flex flex-col">
-    <div style={{ display: 'flex', height: 'calc(100vh - 60px)' }}>
-      <Map
-        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-        initialViewState={{
-          latitude: 26.609,
-          longitude: -80.352,
-          zoom: 9.24
-        }}
-        style={{ width: '70vw', height: '70vw' }}
-        mapStyle="mapbox://styles/mapbox/streets-v12"
-        interactiveLayerIds={['nhc-filled']}
-        onMouseMove={onHover}
-        onClick={onClick}
-      >
-        {showAlerts && data && (
-          <Source id="nhc" type="geojson" data={data}>
-            <Layer {...layerStyle} />
-          </Source>
-        )}
-        {/* Collapsible control */}
+      <div style={{ display: 'flex', height: 'calc(100vh - 60px)' }}>
+        <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
+          <GoogleMap
+            center={center}
+            zoom={9.24}
+            mapContainerStyle={{ width: '70vw', height: '70vw' }}
+            onClick={onClick}
+            onMouseMove={onHover}
+          >
+            {showAlerts && data && (
+              <Data>
+                {data.features.map((feature, index) => (
+                  <Data.Feature
+                    key={index}
+                    geometry={feature.geometry}
+                    options={{ fillColor: '#FF0000', fillOpacity: 0.3 }}
+                  />
+                ))}
+              </Data>
+            )}
+          </GoogleMap>
+        </LoadScript>
         <div style={{
           position: 'absolute',
           top: '10px',
@@ -126,23 +108,21 @@ function Page() {
             </div>
           )}
         </div>
-      </Map>
+      </div>
       <div style={{ width: '30vw', height: '70vw', padding: '10px', overflowY: 'auto', backgroundColor: '#f5f5f5' }}>
         {(selectedInfo || hoverInfo) && (
           <div>
             <h3>
               <span style={alertStyle}>Alert: </span>
-              {(selectedInfo || hoverInfo).feature.properties.headline}
+              {(selectedInfo || hoverInfo)?.feature?.properties?.headline}
             </h3>
             <p>
               <span style={descriptionStyle}>Description: </span>
-              {(selectedInfo || hoverInfo).feature.properties.description}
+              {(selectedInfo || hoverInfo)?.feature?.properties?.description}
             </p>
           </div>
         )}
       </div>
-    </div>
-    <GoogleMap className="flex" />
     </div>
   );
 }
