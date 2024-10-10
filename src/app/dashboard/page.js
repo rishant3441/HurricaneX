@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import Map, { Layer, Source, Marker } from "react-map-gl";
+import Map, { Layer, Source, Marker, Popup } from "react-map-gl";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { BeatLoader } from "react-spinners";
 
@@ -17,6 +17,7 @@ function Page() {
   const [showAlerts, setShowAlerts] = useState(true); // State for toggling alerts
   const [isControlOpen, setControlOpen] = useState(false); // State for collapsible control
   const [userCoordinates, setUserCoordinates] = useState(null); // State for user coordinates
+  const [popupInfo, setPopupInfo] = useState(null); // State for popup info
 
   useEffect(() => {
     if (user == null) router.push("/sign-in");
@@ -72,8 +73,9 @@ function Page() {
     id: 'nhc-filled',
     type: 'fill',
     paint: {
-      'fill-opacity': 0.3,
-      'fill-color': '#FF0000'
+      'fill-opacity': 0.3, // Adjust opacity to make polygons more transparent
+      'fill-color': '#FF0000',
+      'fill-outline-color': '#000000' // Add an outline color to distinguish overlapping polygons
     }
   };
 
@@ -95,7 +97,8 @@ function Page() {
     backgroundColor: 'blue',
     borderRadius: '50%',
     border: '3px solid white',
-    boxShadow: '0 0 5px rgba(0,0,0,0.3)'
+    boxShadow: '0 0 5px rgba(0,0,0,0.3)',
+    cursor: 'pointer'
   };
 
   return (
@@ -121,9 +124,28 @@ function Page() {
           )}
           {/* Add Marker for User Location */}
           {userCoordinates && (
-            <Marker latitude={userCoordinates.latitude} longitude={userCoordinates.longitude}>
+            <Marker
+              latitude={userCoordinates.latitude}
+              longitude={userCoordinates.longitude}
+              onClick={() => setPopupInfo(userCoordinates)}
+            >
               <div style={markerStyle}></div>
             </Marker>
+          )}
+          {/* Render Popup if popupInfo is set */}
+          {popupInfo && (
+            <Popup
+              latitude={popupInfo.latitude}
+              longitude={popupInfo.longitude}
+              onClose={() => setPopupInfo(null)}
+              closeOnClick={false}
+            >
+              <div>
+                <h3>User Location</h3>
+                <p>Latitude: {popupInfo.latitude}</p>
+                <p>Longitude: {popupInfo.longitude}</p>
+              </div>
+            </Popup>
           )}
           {/* Collapsible control */}
           <div style={{
