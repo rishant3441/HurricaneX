@@ -5,6 +5,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthContext } from '@/context/AuthContext';
 import { BeatLoader } from 'react-spinners';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import addData from '@/firebase/addData';
+import getDocument from '@/firebase/getData';
+
+
 
 function Page() {
   const { user } = useAuthContext();
@@ -19,19 +23,66 @@ function Page() {
     { item: 'Local maps', acquired: false },
     // Add more items as necessary
   ]);
+  const [loading, setLoading] = useState(true); // Loading state to avoid rendering prematurely
 
   useEffect(() => {
+    // Redirect if user is logged in and 'redirect' param exists
     if (user && searchParams.get('redirect')) {
       router.push(searchParams.get('redirect'));
     }
+
+    // Fetch checklist from Firestore if user is logged in
+    if (user) {
+      const fetchChecklist = async () => {
+        const { result, error } = await getDocument(user.uid, 'checklists');
+
+        if (error) {
+          console.error('Error fetching checklist:', error);
+        } else if (result.exists()) {
+          // Load saved checklist from Firestore
+          setChecklist(result.data().items || []); // Use empty array if no items are found
+        } else {
+          // If no checklist exists, initialize an empty checklist in Firestore
+          await addData(user.uid, 'checklists', { items: checklist });
+          console.log('New checklist created for user:', user.uid);
+        }
+        setLoading(false);
+      };
+
+      fetchChecklist();
+    } else {
+      setLoading(false);
+    }
   }, [user]);
 
-  const handleCheckboxChange = (index) => {
+  const handleCheckboxChange = async (index) => {
     const newChecklist = [...checklist];
     newChecklist[index].acquired = !newChecklist[index].acquired;
     setChecklist(newChecklist);
-    // Here, you could also add logic to save the updated checklist to a database for the logged-in user
+
+    // Save the updated checklist to Firestore
+    if (user) {
+      const { error } = await addData(user.uid, 'checklists', { items: newChecklist });
+      if (error) {
+        console.error('Error saving checklist:', error);
+      } else {
+        console.log('Checklist updated successfully for user:', user.uid);
+      }
+    }
   };
+
+  if (loading) {
+    return (
+      <BeatLoader
+        cssOverride={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+      />
+    );
+  }
 
   if (user === undefined) {
     // Add a fallback loading state while user state is being determined
