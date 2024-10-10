@@ -19,6 +19,11 @@ function Page() {
   const [userCoordinates, setUserCoordinates] = useState(null); // State for user coordinates
   const [popupInfo, setPopupInfo] = useState(null); // State for popup info
 
+  const [nextRadGoes, setNextRadGoes] = useState(true)
+  const [nextRadP24H, setnextRadP24H] = useState(true)
+  const [nextRadHSR, setnextRadHSR] = useState(true)
+  const [nextRadForecast, setnextRadForecast] = useState(true)
+
   useEffect(() => {
     if (user == null) router.push("/sign-in");
   }, [user]);
@@ -154,22 +159,27 @@ function Page() {
           onMouseMove={onHover}
           onClick={onClick}
         >
-            
-        <Source id="nexrad-forecast" type="raster" sceme="tms" tiles={["https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/hrrr::REFD-F0000-0/{z}/{x}/{y}.png"]}>
-        <Layer {...forecastLayerStyle} />
-        </Source>
-
-        <Source id="nexrad-hsr" type="raster" sceme="tms" tiles={["https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/q2-hsr/{z}/{x}/{y}.png"]}>
-        <Layer {...radarLayerStyle2} />
-        </Source>
-        
-        <Source id="nexrad-p24h" type="raster" sceme="tms" tiles={["https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/q2-p24h/{z}/{x}/{y}.png"]}>
-        <Layer {...radarLayerStyle3} />
-        </Source>
+          {nextRadForecast && (
+            <Source id="nexrad-forecast" type="raster" sceme="tms" tiles={["https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/hrrr::REFD-F0000-0/{z}/{x}/{y}.png"]}>
+              <Layer {...forecastLayerStyle} />
+            </Source>
+          )}
+          {nextRadHSR && (
+            <Source id="nexrad-hsr" type="raster" sceme="tms" tiles={["https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/q2-hsr/{z}/{x}/{y}.png"]}>
+              <Layer {...radarLayerStyle2} />
+            </Source>
+          )}
+          {nextRadP24H && (
+            <Source id="nexrad-p24h" type="raster" sceme="tms" tiles={["https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/q2-p24h/{z}/{x}/{y}.png"]}>
+              <Layer {...radarLayerStyle3} />
+            </Source>
+          )}
 {/* idk if the tms value should be tms or xyz */}
-        <Source id="nexrad-goes" type="raster" sceme="tms" tiles={["https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/goes_east_fulldisk_ch09/{z}/{x}/{y}.png"]}>
-        <Layer {...radarLayerStyle4} />
-        </Source>
+          {nextRadGoes && (
+            <Source id="nexrad-goes" type="raster" sceme="tms" tiles={["https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/goes_east_fulldisk_ch09/{z}/{x}/{y}.png"]}>
+              <Layer {...radarLayerStyle4} />
+            </Source>
+          )}
           {showAlerts && data && (
             <Source id="nhc" type="geojson" data={data}>
               <Layer {...layerStyle} />
@@ -221,14 +231,56 @@ function Page() {
             </button>
             {isControlOpen && (
               <div>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={showAlerts}
-                    onChange={() => setShowAlerts(!showAlerts)}
-                  />
-                  Show Alerts
-                </label>
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={showAlerts}
+                      onChange={() => setShowAlerts(!showAlerts)}
+                    />
+                    Show Alerts
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={nextRadGoes}
+                      onChange={() => setNextRadGoes(!nextRadGoes)}
+                    />
+                    Show Satellite Imagery
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={nextRadP24H}
+                      onChange={() => setnextRadP24H(!nextRadP24H)}
+                    />
+                    Show 24-Hour Precipitation
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={nextRadHSR}
+                      onChange={() => setnextRadHSR(!nextRadHSR)}
+                    />
+                    Show Hybrid-Scan Reflectivity Composite
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={nextRadForecast}
+                      onChange={() => setnextRadForecast(!nextRadForecast)}
+                    />
+                    Show HRRR Reflectivity Forecasts
+                  </label>
+                </div>
               </div>
             )}
           </div>
