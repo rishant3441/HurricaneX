@@ -8,8 +8,6 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import addData from '@/firebase/addData';
 import getDocument from '@/firebase/getData';
 
-
-
 function Page() {
   const { user } = useAuthContext();
   const router = useRouter();
@@ -17,21 +15,21 @@ function Page() {
   const [checklist, setChecklist] = useState([
     { item: 'Water (one gallon per person per day for at least three days)', acquired: false },
     { item: 'Food (at least a three-day supply of non-perishable food)', acquired: false },
-    { item: 'Battery-powered or hand crank radio and a NOAA Weather Radio', acquired: false },
+    { item: 'Radio or a phone with roaming/satellite internet', acquired: false },
     { item: 'Flashlight and extra batteries', acquired: false },
     { item: 'First aid kit', acquired: false },
     { item: 'Local maps', acquired: false },
-    // Add more items as necessary
   ]);
-  const [loading, setLoading] = useState(true); // Loading state to avoid rendering prematurely
+  const [loading, setLoading] = useState(true);
+  const [newItemText, setNewItemText] = useState('');
+  const [isAddingItem, setIsAddingItem] = useState(false);
+  const [isDeletingItem, setIsDeletingItem] = useState(false);
 
   useEffect(() => {
-    // Redirect if user is logged in and 'redirect' param exists
     if (user && searchParams.get('redirect')) {
       router.push(searchParams.get('redirect'));
     }
 
-    // Fetch checklist from Firestore if user is logged in
     if (user) {
       const fetchChecklist = async () => {
         const { result, error } = await getDocument(user.uid, 'checklists');
@@ -39,10 +37,8 @@ function Page() {
         if (error) {
           console.error('Error fetching checklist:', error);
         } else if (result.exists()) {
-          // Load saved checklist from Firestore
-          setChecklist(result.data().items || []); // Use empty array if no items are found
+          setChecklist(result.data().items || []);
         } else {
-          // If no checklist exists, initialize an empty checklist in Firestore
           await addData(user.uid, 'checklists', { items: checklist });
           console.log('New checklist created for user:', user.uid);
         }
@@ -55,12 +51,7 @@ function Page() {
     }
   }, [user]);
 
-  const handleCheckboxChange = async (index) => {
-    const newChecklist = [...checklist];
-    newChecklist[index].acquired = !newChecklist[index].acquired;
-    setChecklist(newChecklist);
-
-    // Save the updated checklist to Firestore
+  const saveChecklistToFirebase = async (newChecklist) => {
     if (user) {
       const { error } = await addData(user.uid, 'checklists', { items: newChecklist });
       if (error) {
@@ -71,21 +62,43 @@ function Page() {
     }
   };
 
-  if (loading) {
-    return (
-      <BeatLoader
-        cssOverride={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      />
-    );
-  }
+  const handleCheckboxChange = async (index) => {
+    const newChecklist = [...checklist];
+    newChecklist[index].acquired = !newChecklist[index].acquired;
+    setChecklist(newChecklist);
+    await saveChecklistToFirebase(newChecklist);
+  };
 
-  if (user === undefined) {
-    // Add a fallback loading state while user state is being determined
+  const handleAddItem = () => {
+    setIsAddingItem(true);
+  };
+
+  const handleConfirmAdd = async () => {
+    if (newItemText.trim()) {
+      const newChecklist = [...checklist, { item: newItemText.trim(), acquired: false }];
+      setChecklist(newChecklist);
+      setNewItemText('');
+      setIsAddingItem(false);
+      await saveChecklistToFirebase(newChecklist);
+    }
+  };
+
+  const handleCancelAdd = () => {
+    setNewItemText('');
+    setIsAddingItem(false);
+  };
+
+  const handleDeleteItem = () => {
+    setIsDeletingItem(!isDeletingItem);
+  };
+
+  const handleConfirmDelete = async (index) => {
+    const newChecklist = checklist.filter((_, i) => i !== index);
+    setChecklist(newChecklist);
+    await saveChecklistToFirebase(newChecklist);
+  };
+
+  if (loading || user === undefined) {
     return (
       <BeatLoader
         cssOverride={{
@@ -103,39 +116,87 @@ function Page() {
     router.push(`/sign-in?redirect=${currentUrl}`);
   };
 
+  const buttonStyle = {
+    padding: '10px 15px',
+    margin: '0 10px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s',
+  };
+
+  const deleteButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#dc3545',
+  };
+
   return (
     <div style={{ display: 'flex', height: 'calc(100vh - 60px)' }}>
       <div
         style={{
           width: '100vw',
           height: '100%',
-          padding: '10px',
+          padding: '20px',
           overflowY: 'auto',
           backgroundColor: '#f5f5f5',
         }}
       >
         <h1>Hurricane Preparation Checklist</h1>
         {user ? (
-          <ul>
-            {checklist.map((item, index) => (
-              <li key={index}>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={item.acquired}
-                    onChange={() => handleCheckboxChange(index)}
-                  />
-                  {item.item}
-                </label>
-              </li>
-            ))}
-          </ul>
+          <>
+            <ul style={{ listStyleType: 'none', padding: 0 }}>
+              {checklist.map((item, index) => (
+                <li key={index} style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div>
+                    <label style={{ display: 'flex', alignItems: 'center' }}>
+                      <input
+                        type="checkbox"
+                        checked={item.acquired}
+                        onChange={() => handleCheckboxChange(index)}
+                        style={{ marginRight: '10px' }}
+                      />
+                      {item.item}
+                    </label>
+                  </div>
+                  {isDeletingItem && (
+                    <button
+                      onClick={() => handleConfirmDelete(index)}
+                      style={{ ...deleteButtonStyle, marginLeft: '20px' }}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+            {isAddingItem && (
+              <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+                <input
+                  type="text"
+                  value={newItemText}
+                  onChange={(e) => setNewItemText(e.target.value)}
+                  placeholder="Enter new item"
+                  style={{ padding: '10px', marginRight: '10px', width: '300px' }}
+                />
+                <button onClick={handleConfirmAdd} style={buttonStyle}>Confirm</button>
+                <button onClick={handleCancelAdd} style={{ ...buttonStyle, backgroundColor: '#6c757d' }}>Cancel</button>
+              </div>
+            )}
+            <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e9ecef', borderRadius: '4px' }}>
+              <button onClick={handleAddItem} style={buttonStyle}>Add New Item</button>
+              <button onClick={handleDeleteItem} style={isDeletingItem ? { ...buttonStyle, backgroundColor: '#28a745' } : deleteButtonStyle}>
+                {isDeletingItem ? 'Done Deleting' : 'Delete Items'}
+              </button>
+            </div>
+          </>
         ) : (
           <div>
             <p>Please log in to create and save your own checklist.</p>
             <button
               onClick={handleSignInClick}
-              style={{ padding: '10px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+              style={buttonStyle}
             >
               Go to Sign In
             </button>
