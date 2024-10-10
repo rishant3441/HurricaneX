@@ -16,6 +16,23 @@
   }
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrolling */
+}
+
+#root, #__next {
+  height: 100%;
+}
+
+main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(

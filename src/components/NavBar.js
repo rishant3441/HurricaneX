@@ -28,7 +28,7 @@ import { auth } from '@/firebase/config'
 import { useAuthState } from 'react-firebase-hooks/auth'
 
 export default function WithSubnavigation() {
-  const { isOpen, onToggle } = useDisclosure()
+  const { isOpen, onToggle } = useDisclosure();
   const [user, loading, error] = useAuthState(auth);
 
   return (
@@ -64,12 +64,10 @@ export default function WithSubnavigation() {
               <Image src="/logo.png" alt="Logo" />
             </Box>
           </Link>
-
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
             <DesktopNav />
           </Flex>
         </Flex>
-
         {user == null && <Stack
           flex={{ base: 1, md: 0 }}
           justify={'flex-end'}
@@ -92,7 +90,6 @@ export default function WithSubnavigation() {
             Sign Up
           </Button>
         </Stack>}
-
         {user != null && (
           <Stack flex={{ base:1, md: 0}} justify={'flex-end'} direction={'row'} spacing={6}>
             <Flex justify={{ base: 'end'}}>
@@ -105,12 +102,11 @@ export default function WithSubnavigation() {
         )}
       </Flex>
           
-
       <Collapse in={isOpen} animateOpacity>
         <MobileNav />
       </Collapse>
     </Box>
-  )
+  );
 }
 
 const DesktopNav = () => {
@@ -307,5 +303,9 @@ const NAV_ITEMS = [
   {
     label: 'Checklist',
     href: '/checklist'
+  },
+  {
+    label: 'Near Me',
+    href: '/near-me'
   }
 ]
