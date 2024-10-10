@@ -101,10 +101,47 @@ function Page() {
     cursor: 'pointer'
   };
 
+  const forecastLayerStyle = {
+        id: 'nexrad-forecast',
+        type: 'raster',
+        source: 'nexrad-forecast',
+        paint: {
+            'raster-opacity': 0.6
+        }
+    };
+
+    const radarLayerStyle2 = {
+        id: 'nexrad-hsr',
+        type: 'raster',
+        source: 'nexrad-hsr',
+        paint: {
+            'raster-opacity': 0.6
+        }
+    };
+
+    const radarLayerStyle3 = {
+        id: 'nexrad-p24h',
+        type: 'raster',
+        source: 'nexrad-p24h',
+        paint: {
+            'raster-opacity': 0.6
+        }
+    };
+
+    const radarLayerStyle4 = {
+        id: 'nexrad-goes',
+        type: 'raster',
+        source: 'nexrad-goes',
+        paint: {
+            'raster-opacity': 0.3
+        }
+    };
+
   return (
     <div className="flex flex-col">
       <div style={{ display: 'flex', height: 'calc(100vh - 60px)' }}>
         <Map
+          id="map"
           mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
           initialViewState={{
             latitude: 26.609,
@@ -117,6 +154,22 @@ function Page() {
           onMouseMove={onHover}
           onClick={onClick}
         >
+            
+        <Source id="nexrad-forecast" type="raster" sceme="tms" tiles={["https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/hrrr::REFD-F0000-0/{z}/{x}/{y}.png"]}>
+        <Layer {...forecastLayerStyle} />
+        </Source>
+
+        <Source id="nexrad-hsr" type="raster" sceme="tms" tiles={["https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/q2-hsr/{z}/{x}/{y}.png"]}>
+        <Layer {...radarLayerStyle2} />
+        </Source>
+        
+        <Source id="nexrad-p24h" type="raster" sceme="tms" tiles={["https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/q2-p24h/{z}/{x}/{y}.png"]}>
+        <Layer {...radarLayerStyle3} />
+        </Source>
+{/* idk if the tms value should be tms or xyz */}
+        <Source id="nexrad-goes" type="raster" sceme="tms" tiles={["https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/goes_east_fulldisk_ch09/{z}/{x}/{y}.png"]}>
+        <Layer {...radarLayerStyle4} />
+        </Source>
           {showAlerts && data && (
             <Source id="nhc" type="geojson" data={data}>
               <Layer {...layerStyle} />
