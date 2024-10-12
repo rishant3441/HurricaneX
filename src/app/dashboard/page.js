@@ -19,10 +19,10 @@ function Page() {
   const [userCoordinates, setUserCoordinates] = useState(null); // State for user coordinates
   const [popupInfo, setPopupInfo] = useState(null); // State for popup info
 
-  const [nextRadGoes, setNextRadGoes] = useState(true)
-  const [nextRadP24H, setnextRadP24H] = useState(true)
-  const [nextRadHSR, setnextRadHSR] = useState(true)
-  const [nextRadForecast, setnextRadForecast] = useState(true)
+  const [nextRadGoes, setNextRadGoes] = useState(false)
+  const [nextRadP24H, setnextRadP24H] = useState(false)
+  const [nextRadHSR, setnextRadHSR] = useState(false)
+  const [nextRadForecast, setnextRadForecast] = useState(false)
 
   useEffect(() => {
     if (user == null) router.push("/sign-in");
