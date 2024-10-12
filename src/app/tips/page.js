@@ -50,147 +50,137 @@ function Page() {
 
 const HurricaneSafetyGuide = () => {
   return (
-    <div>
-      <h1>Hurricane Safety Guide</h1>
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+      <h1 style={{ fontSize: '2.5rem', color: '#1976D2', marginBottom: '20px', textAlign: 'center' }}>Hurricane Safety Guide</h1>
 
-      <section>
-        <h2>Before a Hurricane</h2>
+      <Section title="Before a Hurricane">
         <ul>
-          <li>
-            <strong>Know your zone:</strong> Determine if you live in a
+          <Li>
+            <Strong>Know your zone:</Strong> Determine if you live in a
             hurricane evacuation area by contacting your local
             government/emergency management office.
-          </li>
-          <li>
-            <strong>Have a Family Emergency Plan:</strong> Discuss with your
+          </Li>
+          <Li>
+            <Strong>Have a Family Emergency Plan:</Strong> Discuss with your
             family or close friends how you will stay in contact, where you
             will go, and what you will do in an emergency. Keep a copy of this
             plan in your emergency supplies kit or another safe place.
-          </li>
-          <li>
-            <strong>Put Together an Emergency Supplies Kit:</strong> Create a
+          </Li>
+          <Li>
+            <Strong>Put Together an Emergency Supplies Kit:</Strong> Create a
             basic disaster supplies kit and consider storage locations for
             different situations. Check emergency equipment, such as
-            flashlights, generators, and storm shutters. For a list of key
-            items, visit{' '}
-            <a
-              href="http://www.ready.gov/kit"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              ready.gov/kit
-            </a>
+            flashlights, generators, and storm shutters. Navigate to the checklist
+            to create and manage a list of key items. 
             .
-          </li>
-          <li>
-            <strong>Review Your Homeowners Insurance:</strong> Ensure your
+          </Li>
+          <Li>
+            <Strong>Review Your Homeowners Insurance:</Strong> Ensure your
             insurance policy has adequate coverage for your home.
-          </li>
-          <li>
-            <strong>Understand NWS forecast products:</strong> Especially the
+          </Li>
+          <Li>
+            <Strong>Understand NWS forecast products:</Strong> Especially the
             meaning of NWS watches and warnings.
-          </li>
+          </Li>
         </ul>
-      </section>
+      </Section>
 
-      <section>
-        <h2>During a Hurricane</h2>
+      <Section title="During a Hurricane">
         <ul>
-          <li>
-            <strong>Secure your home:</strong> Cover all windows with permanent
+          <Li>
+            <Strong>Secure your home:</Strong> Cover all windows with permanent
             storm shutters or 5/8 inch exterior grade or marine plywood. Buy
             supplies before hurricane season.
-          </li>
-          <li>
-            <strong>Stay tuned in:</strong> Check websites of your local
+          </Li>
+          <Li>
+            <Strong>Stay tuned in:</Strong> Check websites of your local
             National Weather Service office and local government/emergency
             management office. Listen to NOAA Weather Radio or other radio or
             TV stations for storm news.
-          </li>
-          <li>
-            <strong>Follow instructions issued by local officials:</strong>{' '}
+          </Li>
+          <Li>
+            <Strong>Follow instructions issued by local officials:</Strong>{' '}
             Evacuate immediately if ordered!
-          </li>
-          <li>
-            <strong>If not ordered to evacuate:</strong> Take refuge in a small
+          </Li>
+          <Li>
+            <Strong>If not ordered to evacuate:</Strong> Take refuge in a small
             interior room, closet, or hallway on the lowest level. Stay away
             from windows, skylights, and glass doors. Be aware that after the
             eye of the storm passes, winds will quickly increase from the
             opposite direction.
-          </li>
+          </Li>
         </ul>
-      </section>
+      </Section>
 
-      <section>
-        <h2>After a Hurricane</h2>
+      <Section title="After a Hurricane">
         <ul>
-          <li>
-            <strong>Stay informed:</strong> Continue listening to a NOAA Weather
+          <Li>
+            <Strong>Stay informed:</Strong> Continue listening to a NOAA Weather
             Radio or local news for updates. Return home only when officials
             say it is safe.
-          </li>
-          <li>
-            <strong>Stay alert:</strong> Drive only if necessary and avoid
+          </Li>
+          <Li>
+            <Strong>Stay alert:</Strong> Drive only if necessary and avoid
             flooded roads and washed-out bridges. Watch for fallen objects,
             downed electrical wires, and weakened structures.
-          </li>
-          <li>
-            <strong>Assess the damage:</strong> Walk carefully around your home
+          </Li>
+          <Li>
+            <Strong>Assess the damage:</Strong> Walk carefully around your home
             to check for loose power lines, gas leaks, and structural damage.
-          </li>
-          <li>
-            <strong>Stay safe:</strong> Avoid buildings if you smell gas, if
+          </Li>
+          <Li>
+            <Strong>Stay safe:</Strong> Avoid buildings if you smell gas, if
             floodwaters remain around the building, or if the building was
             damaged by fire and authorities haven&apos;t declared it safe. Never use
             a portable generator inside your home or garage. Use battery-powered
             flashlights instead of candles.
-          </li>
+          </Li>
         </ul>
-      </section>
+      </Section>
 
-      <section>
-        <h2>Watches & Warnings</h2>
+      <Section title="Watches & Warnings">
         <ul>
-          <li>
-            <strong>Hurricane Watch:</strong> Hurricane conditions are possible
+          <Li>
+            <Strong>Hurricane Watch:</Strong> Hurricane conditions are possible
             within your area. Issued 48 hours before tropical-storm-force winds
             are expected.
-          </li>
-          <li>
-            <strong>Tropical Storm Watch:</strong> Tropical storm conditions are
+          </Li>
+          <Li>
+            <Strong>Tropical Storm Watch:</Strong> Tropical storm conditions are
             possible within the specified area within 48 hours.
-          </li>
-          <li>
-            <strong>Storm Surge Watch:</strong> Life-threatening inundation from
+          </Li>
+          <Li>
+            <Strong>Storm Surge Watch:</Strong> Life-threatening inundation from
             rising water is possible within the specified area within 48 hours.
-          </li>
-          <li>
-            <strong>Hurricane Warning:</strong> Hurricane conditions are
+          </Li>
+          <Li>
+            <Strong>Hurricane Warning:</Strong> Hurricane conditions are
             expected within the specified area within 36 hours.
-          </li>
-          <li>
-            <strong>Tropical Storm Warning:</strong> Tropical storm conditions
+          </Li>
+          <Li>
+            <Strong>Tropical Storm Warning:</Strong> Tropical storm conditions
             are expected within the specified area within 36 hours.
-          </li>
-          <li>
-            <strong>Storm Surge Warning:</strong> Life-threatening inundation
+          </Li>
+          <Li>
+            <Strong>Storm Surge Warning:</Strong> Life-threatening inundation
             from rising water is expected within the specified area within 36
             hours.
-          </li>
-          <li>
-            <strong>Extreme Wind Warning:</strong> Extreme sustained winds of a
+          </Li>
+          <Li>
+            <Strong>Extreme Wind Warning:</Strong> Extreme sustained winds of a
             major hurricane are expected within an hour. Take immediate shelter.
-          </li>
+          </Li>
         </ul>
-      </section>
+      </Section>
 
-      <footer>
+      <footer style={{ marginTop: '40px', textAlign: 'center', color: '#666' }}>
         <p>
           For more information, visit the{' '}
           <a
             href="https://www.weather.gov/safety/hurricane"
             target="_blank"
             rel="noopener noreferrer"
+            style={{ color: '#1a5f7a', textDecoration: 'underline' }}
           >
             National Weather Service Hurricane Safety
           </a>{' '}
@@ -200,5 +190,20 @@ const HurricaneSafetyGuide = () => {
     </div>
   );
 };
+
+const Section = ({ title, children }) => (
+  <section style={{ marginBottom: '30px' }}>
+    <h2 style={{ fontSize: '1.8rem', color: '#1976D2', marginBottom: '15px' }}>{title}</h2>
+    {children}
+  </section>
+);
+
+const Strong = ({ children }) => (
+  <span style={{ fontWeight: 'bold' }}>{children}</span>
+);
+
+const Li = ({ children }) => (
+  <li style={{ marginBottom: '10px' }}>{children}</li>
+);
 
 export default Page;
