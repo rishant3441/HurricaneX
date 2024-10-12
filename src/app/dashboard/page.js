@@ -18,11 +18,11 @@ function Page() {
   const [isControlOpen, setControlOpen] = useState(false); // State for collapsible control
   const [userCoordinates, setUserCoordinates] = useState(null); // State for user coordinates
   const [popupInfo, setPopupInfo] = useState(null); // State for popup info
-
-  const [nextRadGoes, setNextRadGoes] = useState(false)
-  const [nextRadP24H, setnextRadP24H] = useState(false)
-  const [nextRadHSR, setnextRadHSR] = useState(false)
-  const [nextRadForecast, setnextRadForecast] = useState(false)
+  const [nextRadGoes, setNextRadGoes] = useState(false);
+  const [nextRadP24H, setnextRadP24H] = useState(false);
+  const [nextRadHSR, setnextRadHSR] = useState(false);
+  const [nextRadForecast, setnextRadForecast] = useState(false);
+  const [isSatellite, setIsSatellite] = useState(false); // State for map style
 
   useEffect(() => {
     if (user == null) router.push("/sign-in");
@@ -107,40 +107,40 @@ function Page() {
   };
 
   const forecastLayerStyle = {
-        id: 'nexrad-forecast',
-        type: 'raster',
-        source: 'nexrad-forecast',
-        paint: {
-            'raster-opacity': 0.6
-        }
-    };
+    id: 'nexrad-forecast',
+    type: 'raster',
+    source: 'nexrad-forecast',
+    paint: {
+      'raster-opacity': 0.6
+    }
+  };
 
-    const radarLayerStyle2 = {
-        id: 'nexrad-hsr',
-        type: 'raster',
-        source: 'nexrad-hsr',
-        paint: {
-            'raster-opacity': 0.6
-        }
-    };
+  const radarLayerStyle2 = {
+    id: 'nexrad-hsr',
+    type: 'raster',
+    source: 'nexrad-hsr',
+    paint: {
+      'raster-opacity': 0.6
+    }
+  };
 
-    const radarLayerStyle3 = {
-        id: 'nexrad-p24h',
-        type: 'raster',
-        source: 'nexrad-p24h',
-        paint: {
-            'raster-opacity': 0.6
-        }
-    };
+  const radarLayerStyle3 = {
+    id: 'nexrad-p24h',
+    type: 'raster',
+    source: 'nexrad-p24h',
+    paint: {
+      'raster-opacity': 0.6
+    }
+  };
 
-    const radarLayerStyle4 = {
-        id: 'nexrad-goes',
-        type: 'raster',
-        source: 'nexrad-goes',
-        paint: {
-            'raster-opacity': 0.3
-        }
-    };
+  const radarLayerStyle4 = {
+    id: 'nexrad-goes',
+    type: 'raster',
+    source: 'nexrad-goes',
+    paint: {
+      'raster-opacity': 0.3
+    }
+  };
 
   return (
     <div className="flex flex-col">
@@ -154,7 +154,7 @@ function Page() {
             zoom: 9.24
           }}
           style={{ width: '70vw', height: '70vw' }}
-          mapStyle="mapbox://styles/mapbox/streets-v12"
+          mapStyle={isSatellite ? "mapbox://styles/mapbox/satellite-v9" : "mapbox://styles/mapbox/streets-v12"}
           interactiveLayerIds={['nhc-filled']}
           onMouseMove={onHover}
           onClick={onClick}
@@ -174,7 +174,6 @@ function Page() {
               <Layer {...radarLayerStyle3} />
             </Source>
           )}
-{/* idk if the tms value should be tms or xyz */}
           {nextRadGoes && (
             <Source id="nexrad-goes" type="raster" sceme="tms" tiles={["https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/goes_east_fulldisk_ch09/{z}/{x}/{y}.png"]}>
               <Layer {...radarLayerStyle4} />
@@ -279,6 +278,16 @@ function Page() {
                       onChange={() => setnextRadForecast(!nextRadForecast)}
                     />
                     Show HRRR Reflectivity Forecasts
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={isSatellite}
+                      onChange={() => setIsSatellite(!isSatellite)}
+                    />
+                    Satellite View
                   </label>
                 </div>
               </div>
