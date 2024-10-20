@@ -1,21 +1,23 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useAuthContext } from '@/context/AuthContext';
 import BeatLoader from 'react-spinners/BeatLoader';
 import GoogleMap from '@/components/GoogleMap';
 
 function Page() {
   const { user } = useAuthContext();
-  //const router = useRouter();
+  const router = useRouter();
   const [isLoading, setLoading] = useState(true);
   const [userCoordinates, setUserCoordinates] = useState(null);
   const [popupInfo, setPopupInfo] = useState(null);
 
   useEffect(() => {
-    if (user == null) router.push("/sign-in");
-  }, [user]);
+    if (user == null) {
+      router.push("/sign-in");
+    }
+  }, [user, router]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -42,7 +44,7 @@ function Page() {
   if (isLoading) return <BeatLoader cssOverride={style} />;
 
   return (
-    <main style={{ flex: 1 }}>
+    <main style={{ flex: 1, overflow: 'auto', height: '100vh' }}>
       <GoogleMap
         userCoordinates={userCoordinates}
         popupInfo={popupInfo}
