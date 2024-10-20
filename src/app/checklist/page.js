@@ -98,6 +98,61 @@ function Page() {
     await saveChecklistToFirebase(newChecklist);
   };
 
+  const handleSignInClick = () => {
+    const currentUrl = encodeURIComponent(window.location.pathname);
+    router.push(`/sign-in?redirect=${currentUrl}`);
+  };
+
+  const pageStyle = {
+    background: user
+      ? '#f5f5f5'
+      : 'linear-gradient(135deg, #87CEEB, #1E90FF)',
+    color: user ? '#333' : '#fff',
+    padding: '20px',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  const checklistStyle = {
+    backgroundColor: '#ffffff',
+    borderRadius: '10px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    padding: '20px',
+    marginTop: '20px',
+    width: '100%',
+    maxWidth: '600px',
+  };
+
+  const itemStyle = (acquired) => ({
+    backgroundColor: acquired ? '#DFF2BF' : '#FFBABA',
+    padding: '10px',
+    borderRadius: '5px',
+    marginBottom: '10px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  });
+
+  const buttonStyle = {
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s',
+    fontSize: '16px',
+    margin: '10px 0',
+  };
+
+  const deleteButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#dc3545',
+  };
+
   if (loading || user === undefined) {
     return (
       <BeatLoader
@@ -111,44 +166,18 @@ function Page() {
     );
   }
 
-  const handleSignInClick = () => {
-    const currentUrl = encodeURIComponent(window.location.pathname);
-    router.push(`/sign-in?redirect=${currentUrl}`);
-  };
-
-  const buttonStyle = {
-    padding: '10px 15px',
-    margin: '0 10px',
-    backgroundColor: '#007bff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
-  };
-
-  const deleteButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: '#dc3545',
-  };
-
   return (
-    <div style={{ display: 'flex', height: 'calc(100vh - 60px)' }}>
-      <div
-        style={{
-          width: '100vw',
-          height: '100%',
-          padding: '20px',
-          overflowY: 'auto',
-          backgroundColor: '#f5f5f5',
-        }}
-      >
-        <h1>Hurricane Preparation Checklist</h1>
-        {user ? (
-          <>
+    <div style={pageStyle}>
+      <h1 className="text-5xl md:text-6xl font-bold text-center mb-8 text-black-600 leading-tight">
+  {user ? 'Your Hurricane Preparation Checklist' : 'Plan Your Hurricane Survival Checklist'}
+</h1>
+
+      {user ? (
+        <>
+          <div style={checklistStyle}>
             <ul style={{ listStyleType: 'none', padding: 0 }}>
               {checklist.map((item, index) => (
-                <li key={index} style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <li key={index} style={itemStyle(item.acquired)}>
                   <div>
                     <label style={{ display: 'flex', alignItems: 'center' }}>
                       <input
@@ -163,7 +192,7 @@ function Page() {
                   {isDeletingItem && (
                     <button
                       onClick={() => handleConfirmDelete(index)}
-                      style={{ ...deleteButtonStyle, marginLeft: '20px' }}
+                      style={deleteButtonStyle}
                     >
                       Delete
                     </button>
@@ -171,38 +200,49 @@ function Page() {
                 </li>
               ))}
             </ul>
-            {isAddingItem && (
-              <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-                <input
-                  type="text"
-                  value={newItemText}
-                  onChange={(e) => setNewItemText(e.target.value)}
-                  placeholder="Enter new item"
-                  style={{ padding: '10px', marginRight: '10px', width: '300px' }}
-                />
-                <button onClick={handleConfirmAdd} style={buttonStyle}>Confirm</button>
-                <button onClick={handleCancelAdd} style={{ ...buttonStyle, backgroundColor: '#6c757d' }}>Cancel</button>
-              </div>
-            )}
-            <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e9ecef', borderRadius: '4px' }}>
-              <button onClick={handleAddItem} style={buttonStyle}>Add New Item</button>
-              <button onClick={handleDeleteItem} style={isDeletingItem ? { ...buttonStyle, backgroundColor: '#28a745' } : deleteButtonStyle}>
-                {isDeletingItem ? 'Done Deleting' : 'Delete Items'}
+          </div>
+
+          {isAddingItem && (
+            <div style={{ marginTop: '20px' }}>
+              <input
+                type="text"
+                value={newItemText}
+                onChange={(e) => setNewItemText(e.target.value)}
+                placeholder="Enter new item"
+                style={{ padding: '10px', marginRight: '10px', width: '300px' }}
+              />
+              <button onClick={handleConfirmAdd} style={buttonStyle}>
+                Confirm
+              </button>
+              <button onClick={handleCancelAdd} style={{ ...buttonStyle, backgroundColor: '#6c757d' }}>
+                Cancel
               </button>
             </div>
-          </>
-        ) : (
-          <div>
-            <p>Please log in to create and save your own checklist.</p>
-            <button
-              onClick={handleSignInClick}
-              style={buttonStyle}
-            >
-              Go to Sign In
+          )}
+
+          <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e9ecef', borderRadius: '4px' }}>
+            <button onClick={handleAddItem} style={buttonStyle}>
+              Add New Item
+            </button>
+            <button onClick={handleDeleteItem} style={isDeletingItem ? { ...buttonStyle, backgroundColor: '#28a745' } : deleteButtonStyle}>
+              {isDeletingItem ? 'Done Deleting' : 'Delete Items'}
             </button>
           </div>
-        )}
-      </div>
+        </>
+      ) : (
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: '20px', lineHeight: '1.5' }}>
+            Track essential supplies, stay prepared, and make sure you have everything you need to weather the storm. Our checklist is completely free and syncs across all your devices!
+          </p>
+          <p style={{ fontSize: '18px', lineHeight: '1.4', marginTop: '10px' }}>
+            Sign in to start creating and saving your personalized hurricane preparation checklist. 
+            It's easy to add and track your items anytime, anywhere.
+          </p>
+          <button onClick={handleSignInClick} style={{ ...buttonStyle, backgroundColor: '#28a745', fontSize: '18px' }}>
+            Sign In & Get Started
+          </button>
+        </div>
+      )}
     </div>
   );
 }
