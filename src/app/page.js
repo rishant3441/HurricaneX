@@ -172,7 +172,7 @@ export default function EnhancedLandingPage() {
             Born from Tragedy, Built for Safety
           </Heading>
           <Text fontSize={'xl'} color={'gray.500'} textAlign={'center'} maxW={'3xl'}>
-            In 2022, Hurricane Milton devastated Tampa, leaving a trail of destruction and heartbreak. This tragedy became our call to action. We created HurricaneX with a singular mission: to ensure that no community would ever be caught unprepared again.
+            In 2024, Hurricane Milton devastated Tampa, leaving a trail of destruction and heartbreak. This tragedy became our call to action. We created HurricaneX with a singular mission: to ensure that no community would ever be caught unprepared again.
           </Text>
           <Box
             borderWidth={1}

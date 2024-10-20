@@ -11,21 +11,24 @@
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/next-js": "^2.2.0",
-    "@chakra-ui/react": "^2.8.2",
-    "@emotion/react": "^11.13.0",
+    "@chakra-ui/react": "^2.10.3",
+    "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@radix-ui/react-accordion": "^1.2.1",
     "@react-google-maps/api": "^2.19.3",
     "@react-oauth/google": "^0.12.1",
     "@types/mapbox-gl": "^3.4.0",
     "@vis.gl/react-google-maps": "^1.1.0",
     "firebase": "^10.12.5",
     "firebaseui": "^6.1.0",
-    "framer-motion": "^11.3.23",
+    "framer-motion": "^11.11.9",
+    "lucide-react": "^0.453.0",
     "mapbox-gl": "^3.5.2",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
     "react-firebase-hooks": "^5.1.1",
+    "react-icons": "^5.3.0",
     "react-map-gl": "^7.1.7",
     "react-social-login-buttons": "^4.1.0",
     "react-spinners": "^0.14.1"
@@ -34,6 +37,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
+    "shadcn-ui": "^0.9.2",
     "tailwindcss": "^3.4.1"
   }
 }
