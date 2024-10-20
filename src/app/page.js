@@ -20,8 +20,10 @@ import { useRouter } from 'next/navigation'
 
 export default function CallToActionWithVideo() {
   const router = useRouter();
+  
   return (
     <Container maxW={'7xl'}>
+      {/* Existing Call to Action Section */}
       <Stack
         align={'center'}
         spacing={{ base: 8, md: 10 }}
@@ -49,7 +51,7 @@ export default function CallToActionWithVideo() {
             </Text>
             <br />
             <Text as={'span'} color={'blue.400'}>
-              be safe later!  
+              be safe later!
             </Text>
           </Heading>
           <Text color={'gray.500'}>
@@ -121,12 +123,41 @@ export default function CallToActionWithVideo() {
               align={'center'}
               w={'100%'}
               h={'100%'}
-              src={
-                '/hurricane_supply_image.png'
-              }
+              src={'/hurricane_supply_image.png'}
             />
           </Box>
         </Flex>
+      </Stack>
+
+      {}
+      <Stack
+        align={'center'}
+        spacing={{ base: 8, md: 10 }}
+        py={{ base: 10, md: 20 }}
+        direction={'column'}>
+        <Heading
+          lineHeight={1.1}
+          fontWeight={600}
+          fontSize={{ base: '3xl', sm: '4xl', lg: '5xl' }}>
+          How HurricaneX Helps You in Times of Crisis
+        </Heading>
+        <Text color={'gray.500'} fontSize={{ base: 'md', lg: 'lg' }} textAlign={'center'} maxW={'3xl'}>
+          HurricaneX is packed with essential features that make sure you're prepared and well-informed before, during, and after a hurricane:
+        </Text>
+        <Stack spacing={6} direction={'column'} maxW={'4xl'}>
+          <Text color={'gray.600'} fontSize={'lg'}>
+            <b>Real-time Hurricane Tracking:</b> With our built-in satellite API, HurricaneX gives you live updates on the hurricane's trajectory, helping you stay ahead of the storm.
+          </Text>
+          <Text color={'gray.600'} fontSize={'lg'}>
+            <b>Supply Finder:</b> HurricaneX scans your local area to find stores and convenience locations with critical goods like food, utilities, gasoline, and water, so you never run out of essentials.
+          </Text>
+          <Text color={'gray.600'} fontSize={'lg'}>
+            <b>Emergency Alerts:</b> Receive immediate notifications whenever a hurricane is approaching your location, ensuring that you and your family have enough time to prepare.
+          </Text>
+          <Text color={'gray.600'} fontSize={'lg'}>
+            <b>Expert Crisis Tips:</b> Our well-written guides provide you with expert advice on how to handle the crisis, from protecting your home to keeping your family safe.
+          </Text>
+        </Stack>
       </Stack>
     </Container>
   )
@@ -149,9 +180,9 @@ const Blob = (props) => {
       <path
         fillRule="evenodd"
         clipRule="evenodd"
-        d="M239.184 439.443c-55.13-5.419-110.241-21.365-151.074-58.767C42.307 338.722-7.478 282.729.938 221.217c8.433-61.644 78.896-91.048 126.871-130.712 34.337-28.388 70.198-51.348 112.004-66.78C282.34 8.024 325.382-3.369 370.518.904c54.019 5.115 112.774 10.886 150.881 49.482 39.916 40.427 49.421 100.753 53.385 157.402 4.13 59.015 11.255 128.44-30.444 170.44-41.383 41.683-111.6 19.106-169.213 30.663-46.68 9.364-88.56 35.21-135.943 30.551z"
-        fill="currentColor"
+        d="M239.184 439.443c-55.13-5.419-110.241-21.365-151.074-58.767C42.307 338.722-7.478 282.729.938 221.217c8.433-61.644 78.896-91.048 126.871-130.712 34.337-28.388 70.198-51.348 111.298-65.296 59.156-19.391 129.893-34.862 179.715-4.47 54.935 33.707 93.439 104.147 104.066 169.268 10.427 63.931-21.091 121.35-64.767 167.635-45.891 48.462-107.595 69.966-168.937 81.632z"
+        fill={useColorModeValue('red.50', 'red.400')}
       />
     </Icon>
-  )
-}
+  );
+};
