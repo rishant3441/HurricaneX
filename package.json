@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.11.8",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/next-js": "^2.2.0",
     "@chakra-ui/react": "^2.10.3",
@@ -22,6 +23,7 @@
     "firebase": "^10.12.5",
     "firebaseui": "^6.1.0",
     "framer-motion": "^11.11.9",
+    "graphql": "^16.9.0",
     "lucide-react": "^0.453.0",
     "mapbox-gl": "^3.5.2",
     "next": "14.2.5",
