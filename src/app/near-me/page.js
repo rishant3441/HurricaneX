@@ -11,7 +11,6 @@ function Page() {
   const router = useRouter();
   const [isLoading, setLoading] = useState(true);
   const [userCoordinates, setUserCoordinates] = useState(null);
-  const [popupInfo, setPopupInfo] = useState(null);
 
   useEffect(() => {
     if (user == null) {
@@ -45,11 +44,7 @@ function Page() {
 
   return (
     <main style={{ flex: 1, overflow: 'auto', height: '100vh' }}>
-      <GoogleMap
-        userCoordinates={userCoordinates}
-        popupInfo={popupInfo}
-        setPopupInfo={setPopupInfo}
-      />
+      <GoogleMap userCoordinates={userCoordinates} />
     </main>
   );
 }
