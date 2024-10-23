@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthContext } from '@/context/AuthContext';
 import BeatLoader from 'react-spinners/BeatLoader';
 import GoogleMap from '@/components/GoogleMap';
+import Stations from '@/components/Stations';
 
 function Page() {
   const { user } = useAuthContext();
@@ -13,6 +14,7 @@ function Page() {
   const [userCoordinates, setUserCoordinates] = useState(null);
   const [popupInfo, setPopupInfo] = useState(null);
   const [showShelters, setShowShelters] = useState(true);
+  const [stations, setStations] = useState([]);
 
   useEffect(() => {
     if (user == null) {
@@ -46,11 +48,13 @@ function Page() {
 
   return (
     <main style={{ flex: 1, overflow: 'auto', height: '100vh' }} className="relative">
+      <Stations setStations={setStations} userCoordinates={userCoordinates} />
       <GoogleMap
         userCoordinates={userCoordinates}
         popupInfo={popupInfo}
         setPopupInfo={setPopupInfo}
         showShelters={showShelters}
+        stations={stations}
       />
       
       {/* Simple Filter Control */}
