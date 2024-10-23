@@ -11,11 +11,8 @@ function Page() {
   const router = useRouter();
   const [isLoading, setLoading] = useState(true);
   const [userCoordinates, setUserCoordinates] = useState(null);
-<<<<<<< HEAD
   const [popupInfo, setPopupInfo] = useState(null);
   const [showShelters, setShowShelters] = useState(true);
-=======
->>>>>>> c82c0a9c0b33848514e65f1ee716a5f07701ad52
 
   useEffect(() => {
     if (user == null) {
@@ -48,7 +45,6 @@ function Page() {
   if (isLoading) return <BeatLoader cssOverride={style} />;
 
   return (
-<<<<<<< HEAD
     <main style={{ flex: 1, overflow: 'auto', height: '100vh' }} className="relative">
       <GoogleMap
         userCoordinates={userCoordinates}
@@ -69,10 +65,6 @@ function Page() {
           <span className="text-sm font-medium">Show Hurricane Shelters</span>
         </label>
       </div>
-=======
-    <main style={{ flex: 1, overflow: 'auto', height: '100vh' }}>
-      <GoogleMap userCoordinates={userCoordinates} />
->>>>>>> c82c0a9c0b33848514e65f1ee716a5f07701ad52
     </main>
   );
 }
