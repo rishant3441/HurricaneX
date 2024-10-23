@@ -1,7 +1,6 @@
-// GoogleMap.js
-import { Map, Marker } from '@vis.gl/react-google-maps';
+import React, { useState, useRef } from 'react'; 
+import { Map, Marker, InfoWindow } from '@vis.gl/react-google-maps';
 
-// Updated shelter data with addresses
 const SHELTERS = [
     {
         name: "West Boca Raton High School",
@@ -86,14 +85,54 @@ const SHELTERS = [
 ];
 
 export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, showShelters }) {
+    const [hoveredShelter, setHoveredShelter] = useState(null);
+    const [clickedShelter, setClickedShelter] = useState(null); // State for clicked marker
+    const hoverTimeout = useRef(null); // Use a ref to hold the timeout
+
     // Custom icon for user location
     const userLocationIcon = {
         path: google.maps.SymbolPath.CIRCLE,
-        fillColor: '#4285F4',  // Google Maps blue
+        fillColor: '#4285F4',
         fillOpacity: 1,
-        strokeColor: '#FFFFFF',  // White border
+        strokeColor: '#FFFFFF',
         strokeWeight: 2,
-        scale: 8  // Adjust size of the circle
+        scale: 8
+    };
+
+    // Custom icon for shelter markers
+    const shelterIcon = {
+        path: google.maps.SymbolPath.CIRCLE,
+        fillColor: '#FF0000',
+        fillOpacity: 0.8,
+        strokeColor: '#FFFFFF',
+        strokeWeight: 2,
+        scale: 10
+    };
+
+    const handleMouseOver = (shelter) => {
+        if (hoverTimeout.current) {
+            clearTimeout(hoverTimeout.current);
+        }
+        if (!clickedShelter) { // Only update hovered state if no shelter is clicked
+            setHoveredShelter(shelter);
+        }
+    };
+
+    const handleMouseOut = () => {
+        if (!clickedShelter) { // Only hide hover popup if no shelter is clicked
+            hoverTimeout.current = setTimeout(() => {
+                setHoveredShelter(null);
+            }, 200); // 200ms delay
+        }
+    };
+
+    const handleMarkerClick = (shelter) => {
+        setClickedShelter(shelter); // Set clicked shelter
+        setHoveredShelter(null); // Close any hover popup
+    };
+
+    const handleCloseClick = () => {
+        setClickedShelter(null); // Clear clicked shelter state when X button is clicked
     };
 
     return (
@@ -113,14 +152,43 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
                 />
             )}
 
-            {/* Shelter markers */}
+            {/* Shelter markers with hover and click functionality */}
             {showShelters && SHELTERS.map((shelter, index) => (
-                <Marker
-                    key={index}
-                    position={shelter.position}
-                    title={`${shelter.name}\n${shelter.address}`}
-                    onClick={() => setPopupInfo(shelter)}
-                />
+                <div key={index}>
+                    <Marker
+                        position={shelter.position}
+                        icon={shelterIcon}
+                        onMouseOver={() => handleMouseOver(shelter)}
+                        onMouseOut={handleMouseOut}
+                        onClick={() => handleMarkerClick(shelter)}
+                    />
+                    
+                    {/* Info Window for hover effect (no close button) */}
+                    {hoveredShelter === shelter && !clickedShelter && (
+                        <InfoWindow
+                            position={shelter.position}
+                            options={{ disableAutoPan: true, closeBoxURL: '' }} // No close button for hover window
+                        >
+                            <div className="p-2">
+                                <h3 className="font-bold text-lg mb-1">{shelter.name}</h3>
+                                <p className="text-sm text-gray-600">{shelter.address}</p>
+                            </div>
+                        </InfoWindow>
+                    )}
+
+                    {/* Info Window for clicked marker (has close button) */}
+                    {clickedShelter === shelter && (
+                        <InfoWindow
+                            position={shelter.position}
+                            onCloseClick={handleCloseClick} // Handle default "X" button click
+                        >
+                            <div className="p-2">
+                                <h3 className="font-bold text-lg mb-1">{shelter.name}</h3>
+                                <p className="text-sm text-gray-600">{shelter.address}</p>
+                            </div>
+                        </InfoWindow>
+                    )}
+                </div>
             ))}
         </Map>
     );
