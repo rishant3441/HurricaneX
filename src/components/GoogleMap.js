@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'; 
+import React, { useEffect, useRef, useState } from 'react';
 import { Map, Marker, InfoWindow } from '@vis.gl/react-google-maps';
 
 const SHELTERS = [
@@ -295,4 +295,153 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
             ))}
         </Map>
     );
+}
+export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, showShelters, stations }) {
+  const [hoveredShelter, setHoveredShelter] = useState(null);
+  const [clickedShelter, setClickedShelter] = useState(null); // State for clicked marker
+  const hoverTimeout = useRef(null); // Use a ref to hold the timeout
+  const [stationMarkers, setStationMarkers] = useState([]);
+
+  // Custom icon for user location
+  const userLocationIcon = {
+    path: google.maps.SymbolPath.CIRCLE,
+    fillColor: '#4285F4',
+    fillOpacity: 1,
+    strokeColor: '#FFFFFF',
+    strokeWeight: 2,
+    scale: 8
+  };
+
+  // Custom icon for shelter markers
+  const shelterIcon = {
+    path: google.maps.SymbolPath.CIRCLE,
+    fillColor: '#FF0000',
+    fillOpacity: 0.8,
+    strokeColor: '#FFFFFF',
+    strokeWeight: 2,
+    scale: 10
+  };
+
+  const handleMouseOver = (shelter) => {
+    if (hoverTimeout.current) {
+      clearTimeout(hoverTimeout.current);
+    }
+    if (!clickedShelter) { // Only update hovered state if no shelter is clicked
+      setHoveredShelter(shelter);
+    }
+  };
+
+  const handleMouseOut = () => {
+    if (!clickedShelter) { // Only hide hover popup if no shelter is clicked
+      hoverTimeout.current = setTimeout(() => {
+        setHoveredShelter(null);
+      }, 200); // 200ms delay
+    }
+  };
+
+  const handleMarkerClick = (shelter) => {
+    setClickedShelter(shelter); // Set clicked shelter
+    setHoveredShelter(null); // Close any hover popup
+  };
+
+  const handleCloseClick = () => {
+    setClickedShelter(null); // Clear clicked shelter state when X button is clicked
+  };
+
+  useEffect(() => {
+    const geocodeAddress = async (address) => {
+      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`);
+      const data = await response.json();
+      if (data.results.length > 0) {
+        return data.results[0].geometry.location;
+      } else {
+        console.error('Geocoding API error:', data);
+        return null;
+      }
+    };
+
+    const fetchStationCoordinates = async () => {
+      const markers = await Promise.all(stations.map(async (station) => {
+        const location = await geocodeAddress(station.address);
+        if (location) {
+          return {
+            position: location,
+            name: station.name,
+            address: station.address
+          };
+        }
+        return null;
+      }));
+      setStationMarkers(markers.filter(marker => marker !== null));
+    };
+
+    fetchStationCoordinates();
+  }, [stations]);
+
+  return (
+    <Map
+      style={{ width: '100vw', height: '100vh' }}
+      defaultCenter={{ lat: 26.609, lng: -80.352 }}
+      defaultZoom={9.2}
+      gestureHandling={'greedy'}
+      disableDefaultUI={true}
+    >
+      {/* User location marker */}
+      {userCoordinates && (
+        <Marker
+          position={userCoordinates}
+          title="Your Location"
+          icon={userLocationIcon}
+        />
+      )}
+
+      {/* Shelter markers with hover and click functionality */}
+      {showShelters && SHELTERS.map((shelter, index) => (
+        <div key={index}>
+          <Marker
+            position={shelter.position}
+            icon={shelterIcon}
+            onMouseOver={() => handleMouseOver(shelter)}
+            onMouseOut={handleMouseOut}
+            onClick={() => handleMarkerClick(shelter)}
+          />
+          
+          {/* Info Window for hover effect (no close button) */}
+          {hoveredShelter === shelter && !clickedShelter && (
+            <InfoWindow
+              position={shelter.position}
+              options={{ disableAutoPan: true, closeBoxURL: '' }} // No close button for hover window
+            >
+              <div className="p-2">
+                <h3 className="font-bold text-lg mb-1">{shelter.name}</h3>
+                <p className="text-sm text-gray-600">{shelter.address}</p>
+              </div>
+            </InfoWindow>
+          )}
+
+          {/* Info Window for clicked marker (has close button) */}
+          {clickedShelter === shelter && (
+            <InfoWindow
+              position={shelter.position}
+              onCloseClick={handleCloseClick} // Handle default "X" button click
+            >
+              <div className="p-2">
+                <h3 className="font-bold text-lg mb-1">{shelter.name}</h3>
+                <p className="text-sm text-gray-600">{shelter.address}</p>
+              </div>
+            </InfoWindow>
+          )}
+        </div>
+      ))}
+
+      {/* Gas station markers */}
+      {stationMarkers.map((station, index) => (
+        <Marker
+          key={index}
+          position={station.position}
+          title={station.name}
+        />
+      ))}
+    </Map>
+  );
 }

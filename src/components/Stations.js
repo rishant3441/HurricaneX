@@ -1,5 +1,5 @@
 import { useQuery, gql } from "@apollo/client";
-import styles from "../styles/Home.module.css";
+import { useEffect } from "react";
 
 const QUERY = gql`
 query LocationBySearchTerm($brandId: Int, $cursor: String, $fuel: Int, $lat: Float, $lng: Float, $maxAge: Int, $search: String) {
@@ -9,11 +9,6 @@ query LocationBySearchTerm($brandId: Int, $cursor: String, $fuel: Int, $lat: Flo
     search: $search
     priority: "locality"
   ) {
-    countryCode
-    displayName
-    latitude
-    longitude
-    regionCode
     stations(
       brandId: $brandId
       cursor: $cursor
@@ -23,84 +18,39 @@ query LocationBySearchTerm($brandId: Int, $cursor: String, $fuel: Int, $lat: Flo
       maxAge: $maxAge
       priority: "locality"
     ) {
-      count
-      cursor {
-        next
-        __typename
-      }
       results {
         address {
           country
           line1
-          line2
           locality
           postalCode
           region
-          __typename
         }
-        emergencyStatus {
-          hasDiesel {
-            nickname
-            reportStatus
-            updateDate
-            __typename
-          }
-          hasGas {
-            nickname
-            reportStatus
-            updateDate
-            __typename
-          }
-          hasPower {
-            nickname
-            reportStatus
-            updateDate
-            __typename
-          }
-          __typename
-        }
-        fuels
-        hasActiveOutage
         name
-        prices {
-          cash {
-            nickname
-            postedTime
-            price
-            formattedPrice
-            __typename
-          }
-          credit {
-            nickname
-            postedTime
-            price
-            formattedPrice
-            __typename
-          }
-          discount
-          fuelProduct
-          __typename
-        }
-        priceUnit
-        __typename
       }
-      __typename
     }
-    trends {
-      areaName
-      country
-      today
-      todayLow
-      trend
-      __typename
-    }
-    __typename
   }
 }
 `;
 
-export default function Countries() {
-  const { data, loading, error } = useQuery(QUERY);
+export default function Stations({ setStations, userCoordinates }) {
+  const { data, loading, error } = useQuery(QUERY, {
+    variables: {
+      lat: userCoordinates.lat,
+      lng: userCoordinates.lng,
+      search: "", // Default search term
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      const stations = data.locationBySearchTerm.stations.results.map(station => ({
+        name: station.name,
+        address: `${station.address.line1} ${station.address.locality} ${station.address.region} ${station.address.postalCode} ${station.address.country}`
+      }));
+      setStations(stations);
+    }
+  }, [data, setStations]);
 
   if (loading) {
     return <h2>Loading...</h2>;
@@ -111,9 +61,5 @@ export default function Countries() {
     return null;
   }
 
-  return (
-    <div>
-        
-    </div>
-  );
+  return null;
 }
