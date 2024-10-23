@@ -13,6 +13,7 @@ function Page() {
   const [userCoordinates, setUserCoordinates] = useState(null);
   const [popupInfo, setPopupInfo] = useState(null);
   const [showShelters, setShowShelters] = useState(true);
+  const [showFoodBanks, setShowFoodBanks] = useState(true); // New state for showing food banks
 
   useEffect(() => {
     if (user == null) {
@@ -51,9 +52,10 @@ function Page() {
         popupInfo={popupInfo}
         setPopupInfo={setPopupInfo}
         showShelters={showShelters}
+        showFoodBanks={showFoodBanks} // Pass showFoodBanks state to the map
       />
-      
-      {/* Simple Filter Control */}
+
+      {/* Filter Control */}
       <div className="absolute top-4 right-4 p-4 bg-white rounded-lg shadow-lg z-10">
         <label className="flex items-center space-x-2 cursor-pointer">
           <input
@@ -63,6 +65,15 @@ function Page() {
             className="w-4 h-4 cursor-pointer"
           />
           <span className="text-sm font-medium">Show Hurricane Shelters</span>
+        </label>
+        <label className="flex items-center space-x-2 cursor-pointer mt-2">
+          <input
+            type="checkbox"
+            checked={showFoodBanks}
+            onChange={(e) => setShowFoodBanks(e.target.checked)} // New toggle for food banks
+            className="w-4 h-4 cursor-pointer"
+          />
+          <span className="text-sm font-medium">Show Food Banks</span>
         </label>
       </div>
     </main>

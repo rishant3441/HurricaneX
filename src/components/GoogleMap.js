@@ -84,12 +84,76 @@ const SHELTERS = [
     }
 ];
 
-export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, showShelters }) {
-    const [hoveredShelter, setHoveredShelter] = useState(null);
-    const [clickedShelter, setClickedShelter] = useState(null); // State for clicked marker
-    const hoverTimeout = useRef(null); // Use a ref to hold the timeout
+const FOOD_BANKS = [
+    {
+        name: "Boca Helping Hands",
+        position: { lat: 26.363913484245217, lng: -80.08694943037928 },
+        address: "1500 NW 1st Ct, Boca Raton, FL 33432"
+    },
+    {
+        name: "Feeding Palm Beach County",
+        position: { lat: 26.541119723116104, lng: -80.07981464571766 },
+        address: "4925 Park Ridge Blvd, Boynton Beach, FL 33426"
+    },
+    {
+        name: "Restoration Bridge International (Food Distribution Center)",
+        position: { lat: 26.686487808506, lng: -80.19431397270101 },
+        address: "7255 S Military Trl, Greenacres, FL 33463"
+    },
+    {
+        name: "CROS Ministries' Lake Worth Food Pantry",
+        position: { lat: 26.615576739047718, lng: -80.06445205736068 },
+        address: "1615 Lake Ave, Lake Worth Beach, FL 33460"
+    },
+    {
+        name: "Palm Beach County Food Bank",
+        position: { lat: 26.62596257849268, lng: -80.07712468804462 },
+        address: "701 Boutwell Rd Suite A-2, Lake Worth Beach, FL 33461"
+    },
+    {
+        name: "Palanca Pantry - Food Distribution Center",
+        position: { lat: 26.622394908415018, lng: -80.10390437270269 },
+        address: "3730 Kirk Road, Lake Worth Beach, FL 33461"
+    },
+    {
+        name: "Farmworker Coordinating Council of Palm Beach County, Inc",
+        position: { lat: 26.631896244715936, lng: -80.05780127455098 },
+        address: "1123 Crestwood Blvd, Lake Worth Beach, FL 33460"
+    },
+    {
+        name: "Palm Beach Harvest",
+        position: { lat: 26.671058698640035, lng: -80.04791385920807 },
+        address: "4601 S Flagler Dr, West Palm Beach, FL 33405"
+    },
+    {
+        name: "Tree of Life Resource Center",
+        position: { lat: 26.718027259952844, lng: -80.13873451687797 },
+        address: "2701 Vista Pkwy Unit A-6, West Palm Beach, FL 33411"
+    },
+    {
+        name: "Feed the Hungry Pantry",
+        position: { lat: 26.715054999048487, lng: -80.09615780338457 },
+        address: "900 Brandywine Rd, West Palm Beach, FL 33409"
+    },
+    {
+        name: "Extended Hands Community Outreach",
+        position: { lat: 26.73086148858527, lng: -80.05604378434477 },
+        address: "528 Cheerful St, West Palm Beach, FL 33407"
+    },
+    {
+        name: "Riviera Beach Community Outreach - Food Distribution Center",
+        position: { lat: 26.768422504735028, lng: -80.07089517639646 },
+        address: "1144 W 6th St, West Palm Beach, FL 33404"
+    }
+];
 
-    // Custom icon for user location
+export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, showShelters, showFoodBanks }) {
+    const [hoveredShelter, setHoveredShelter] = useState(null);
+    const [hoveredFoodBank, setHoveredFoodBank] = useState(null); // State for hovered food bank
+    const [clickedShelter, setClickedShelter] = useState(null);
+    const [clickedFoodBank, setClickedFoodBank] = useState(null); // State for clicked food bank
+    const hoverTimeout = useRef(null);
+
     const userLocationIcon = {
         path: google.maps.SymbolPath.CIRCLE,
         fillColor: '#4285F4',
@@ -99,7 +163,6 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
         scale: 8
     };
 
-    // Custom icon for shelter markers
     const shelterIcon = {
         path: google.maps.SymbolPath.CIRCLE,
         fillColor: '#FF0000',
@@ -109,31 +172,48 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
         scale: 10
     };
 
-    const handleMouseOver = (shelter) => {
-        if (hoverTimeout.current) {
-            clearTimeout(hoverTimeout.current);
-        }
-        if (!clickedShelter) { // Only update hovered state if no shelter is clicked
-            setHoveredShelter(shelter);
-        }
+    const foodBankIcon = {
+        path: google.maps.SymbolPath.CIRCLE,
+        fillColor: '#00FF00', // Green for food banks
+        fillOpacity: 0.8,
+        strokeColor: '#FFFFFF',
+        strokeWeight: 2,
+        scale: 10
     };
 
-    const handleMouseOut = () => {
-        if (!clickedShelter) { // Only hide hover popup if no shelter is clicked
-            hoverTimeout.current = setTimeout(() => {
-                setHoveredShelter(null);
-            }, 200); // 200ms delay
-        }
+    // Handlers for shelters
+    const handleShelterMouseOver = (shelter) => {
+        if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+        if (!clickedShelter) setHoveredShelter(shelter);
     };
 
-    const handleMarkerClick = (shelter) => {
-        setClickedShelter(shelter); // Set clicked shelter
-        setHoveredShelter(null); // Close any hover popup
+    const handleShelterMouseOut = () => {
+        if (!clickedShelter) hoverTimeout.current = setTimeout(() => setHoveredShelter(null), 200);
     };
 
-    const handleCloseClick = () => {
-        setClickedShelter(null); // Clear clicked shelter state when X button is clicked
+    const handleShelterClick = (shelter) => {
+        setClickedShelter(shelter);
+        setHoveredShelter(null);
     };
+
+    const handleShelterCloseClick = () => setClickedShelter(null);
+
+    // Handlers for food banks
+    const handleFoodBankMouseOver = (foodBank) => {
+        if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+        if (!clickedFoodBank) setHoveredFoodBank(foodBank);
+    };
+
+    const handleFoodBankMouseOut = () => {
+        if (!clickedFoodBank) hoverTimeout.current = setTimeout(() => setHoveredFoodBank(null), 200);
+    };
+
+    const handleFoodBankClick = (foodBank) => {
+        setClickedFoodBank(foodBank);
+        setHoveredFoodBank(null);
+    };
+
+    const handleFoodBankCloseClick = () => setClickedFoodBank(null);
 
     return (
         <Map
@@ -152,23 +232,19 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
                 />
             )}
 
-            {/* Shelter markers with hover and click functionality */}
+            {/* Shelter markers */}
             {showShelters && SHELTERS.map((shelter, index) => (
                 <div key={index}>
                     <Marker
                         position={shelter.position}
                         icon={shelterIcon}
-                        onMouseOver={() => handleMouseOver(shelter)}
-                        onMouseOut={handleMouseOut}
-                        onClick={() => handleMarkerClick(shelter)}
+                        onMouseOver={() => handleShelterMouseOver(shelter)}
+                        onMouseOut={handleShelterMouseOut}
+                        onClick={() => handleShelterClick(shelter)}
                     />
-                    
-                    {/* Info Window for hover effect (no close button) */}
+
                     {hoveredShelter === shelter && !clickedShelter && (
-                        <InfoWindow
-                            position={shelter.position}
-                            options={{ disableAutoPan: true, closeBoxURL: '' }} // No close button for hover window
-                        >
+                        <InfoWindow position={shelter.position} options={{ disableAutoPan: true }}>
                             <div className="p-2">
                                 <h3 className="font-bold text-lg mb-1">{shelter.name}</h3>
                                 <p className="text-sm text-gray-600">{shelter.address}</p>
@@ -176,15 +252,42 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
                         </InfoWindow>
                     )}
 
-                    {/* Info Window for clicked marker (has close button) */}
                     {clickedShelter === shelter && (
-                        <InfoWindow
-                            position={shelter.position}
-                            onCloseClick={handleCloseClick} // Handle default "X" button click
-                        >
+                        <InfoWindow position={shelter.position} onCloseClick={handleShelterCloseClick}>
                             <div className="p-2">
                                 <h3 className="font-bold text-lg mb-1">{shelter.name}</h3>
                                 <p className="text-sm text-gray-600">{shelter.address}</p>
+                            </div>
+                        </InfoWindow>
+                    )}
+                </div>
+            ))}
+
+            {/* Food bank markers */}
+            {showFoodBanks && FOOD_BANKS.map((foodBank, index) => (
+                <div key={index}>
+                    <Marker
+                        position={foodBank.position}
+                        icon={foodBankIcon}
+                        onMouseOver={() => handleFoodBankMouseOver(foodBank)}
+                        onMouseOut={handleFoodBankMouseOut}
+                        onClick={() => handleFoodBankClick(foodBank)}
+                    />
+
+                    {hoveredFoodBank === foodBank && !clickedFoodBank && (
+                        <InfoWindow position={foodBank.position} options={{ disableAutoPan: true }}>
+                            <div className="p-2">
+                                <h3 className="font-bold text-lg mb-1">{foodBank.name}</h3>
+                                <p className="text-sm text-gray-600">{foodBank.address}</p>
+                            </div>
+                        </InfoWindow>
+                    )}
+
+                    {clickedFoodBank === foodBank && (
+                        <InfoWindow position={foodBank.position} onCloseClick={handleFoodBankCloseClick}>
+                            <div className="p-2">
+                                <h3 className="font-bold text-lg mb-1">{foodBank.name}</h3>
+                                <p className="text-sm text-gray-600">{foodBank.address}</p>
                             </div>
                         </InfoWindow>
                     )}
