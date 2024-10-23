@@ -147,162 +147,161 @@ const FOOD_BANKS = [
     }
 ];
 
-export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, showShelters, showFoodBanks, stations }) {
-    const [hoveredLocation, setHoveredLocation] = useState(null);
-    const [clickedLocation, setClickedLocation] = useState(null);
-    const hoverTimeout = useRef(null);
-    const [stationMarkers, setStationMarkers] = useState([]);
-  
-    // Custom icon definitions
-    const userLocationIcon = {
-      path: google.maps.SymbolPath.CIRCLE,
-      fillColor: '#4285F4',
-      fillOpacity: 1,
-      strokeColor: '#FFFFFF',
-      strokeWeight: 2,
-      scale: 8
+export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, showShelters, showFoodBanks, showGasStations, stations }) {
+  const [hoveredLocation, setHoveredLocation] = useState(null);
+  const [clickedLocation, setClickedLocation] = useState(null);
+  const hoverTimeout = useRef(null);
+  const [stationMarkers, setStationMarkers] = useState([]);
+
+  // Custom icon definitions
+  const userLocationIcon = {
+    path: google.maps.SymbolPath.CIRCLE,
+    fillColor: '#4285F4',
+    fillOpacity: 1,
+    strokeColor: '#FFFFFF',
+    strokeWeight: 2,
+    scale: 8
+  };
+
+  const shelterIcon = {
+    path: google.maps.SymbolPath.CIRCLE,
+    fillColor: '#FF0000',
+    fillOpacity: 0.8,
+    strokeColor: '#FFFFFF',
+    strokeWeight: 2,
+    scale: 10
+  };
+
+  const foodBankIcon = {
+    path: google.maps.SymbolPath.CIRCLE,
+    fillColor: '#00FF00',
+    fillOpacity: 0.8,
+    strokeColor: '#FFFFFF',
+    strokeWeight: 2,
+    scale: 10
+  };
+
+  const stationIcon = {
+    path: google.maps.SymbolPath.CIRCLE,
+    fillColor: '#8B4513', // Brown color
+    fillOpacity: 0.8,
+    strokeColor: '#FFFFFF',
+    strokeWeight: 2,
+    scale: 10
+  };
+
+  // Combined handler for hover over any location (shelter, food bank, station)
+  const handleMouseOver = (location) => {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    if (!clickedLocation) setHoveredLocation(location);
+  };
+
+  const handleMouseOut = () => {
+    if (!clickedLocation) hoverTimeout.current = setTimeout(() => setHoveredLocation(null), 200);
+  };
+
+  const handleClick = (location) => {
+    setClickedLocation(location);
+    setHoveredLocation(null); // Clear hover on click
+  };
+
+  const handleCloseClick = () => setClickedLocation(null);
+
+  // Fetch station markers if provided
+  useEffect(() => {
+    const geocodeAddress = async (address) => {
+      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`);
+      const data = await response.json();
+      if (data.results.length > 0) return data.results[0].geometry.location;
+      else {
+        console.error('Geocoding API error:', data);
+        return null;
+      }
     };
-  
-    const shelterIcon = {
-      path: google.maps.SymbolPath.CIRCLE,
-      fillColor: '#FF0000',
-      fillOpacity: 0.8,
-      strokeColor: '#FFFFFF',
-      strokeWeight: 2,
-      scale: 10
-    };
-  
-    const foodBankIcon = {
-      path: google.maps.SymbolPath.CIRCLE,
-      fillColor: '#00FF00',
-      fillOpacity: 0.8,
-      strokeColor: '#FFFFFF',
-      strokeWeight: 2,
-      scale: 10
-    };
-  
-    const stationIcon = {
-      path: google.maps.SymbolPath.CIRCLE,
-      fillColor: '#0000FF',
-      fillOpacity: 0.8,
-      strokeColor: '#FFFFFF',
-      strokeWeight: 2,
-      scale: 10
-    };
-  
-    // Combined handler for hover over any location (shelter, food bank, station)
-    const handleMouseOver = (location) => {
-      if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
-      if (!clickedLocation) setHoveredLocation(location);
-    };
-  
-    const handleMouseOut = () => {
-      if (!clickedLocation) hoverTimeout.current = setTimeout(() => setHoveredLocation(null), 200);
-    };
-  
-    const handleClick = (location) => {
-      setClickedLocation(location);
-      setHoveredLocation(null); // Clear hover on click
-    };
-  
-    const handleCloseClick = () => setClickedLocation(null);
-  
-    // Fetch station markers if provided
-    useEffect(() => {
-      const geocodeAddress = async (address) => {
-        const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`);
-        const data = await response.json();
-        if (data.results.length > 0) return data.results[0].geometry.location;
-        else {
-          console.error('Geocoding API error:', data);
-          return null;
+
+    const fetchStationCoordinates = async () => {
+      const markers = await Promise.all(stations.map(async (station) => {
+        const location = await geocodeAddress(station.address);
+        if (location) {
+          return { position: location, name: station.name, address: station.address };
         }
-      };
-  
-      const fetchStationCoordinates = async () => {
-        const markers = await Promise.all(stations.map(async (station) => {
-          const location = await geocodeAddress(station.address);
-          if (location) {
-            return { position: location, name: station.name, address: station.address };
-          }
-          return null;
-        }));
-        setStationMarkers(markers.filter(marker => marker !== null));
-      };
-  
-      if (stations) fetchStationCoordinates();
-    }, [stations]);
-  
-    return (
-      <Map
-        style={{ width: '100vw', height: '100vh' }}
-        defaultCenter={{ lat: 26.609, lng: -80.352 }}
-        defaultZoom={9.2}
-        gestureHandling={'greedy'}
-        disableDefaultUI={true}
-      >
-        {/* User location marker */}
-        {userCoordinates && (
-          <Marker position={userCoordinates} title="Your Location" icon={userLocationIcon} />
-        )}
-  
-        {/* Shelter markers */}
-        {showShelters && SHELTERS.map((shelter, index) => (
-          <Marker
-            key={index}
-            position={shelter.position}
-            icon={shelterIcon}
-            onMouseOver={() => handleMouseOver(shelter)}
-            onMouseOut={handleMouseOut}
-            onClick={() => handleClick(shelter)}
-          />
-        ))}
-  
-        {/* Food bank markers */}
-        {showFoodBanks && FOOD_BANKS.map((foodBank, index) => (
-          <Marker
-            key={index}
-            position={foodBank.position}
-            icon={foodBankIcon}
-            onMouseOver={() => handleMouseOver(foodBank)}
-            onMouseOut={handleMouseOut}
-            onClick={() => handleClick(foodBank)}
-          />
-        ))}
-  
-        {/* Station markers */}
-        {stationMarkers.map((station, index) => (
-          <Marker
-            key={index}
-            position={station.position}
-            title={station.name}
-            icon={stationIcon}
-            onMouseOver={() => handleMouseOver(station)}
-            onMouseOut={handleMouseOut}
-            onClick={() => handleClick(station)}
-          />
-        ))}
-  
-        {/* InfoWindow for hovered location (no close button) */}
-        {hoveredLocation && !clickedLocation && (
-          <InfoWindow position={hoveredLocation.position} options={{ disableAutoPan: true }}>
-            <div className="p-2">
-              <h3 className="font-bold text-lg mb-1">{hoveredLocation.name}</h3>
-              <p className="text-sm text-gray-600">{hoveredLocation.address}</p>
-            </div>
-          </InfoWindow>
-        )}
-  
-        {/* InfoWindow for clicked location (with close button) */}
-        {clickedLocation && (
-          <InfoWindow position={clickedLocation.position} onCloseClick={handleCloseClick}>
-            <div className="p-2">
-              <h3 className="font-bold text-lg mb-1">{clickedLocation.name}</h3>
-              <p className="text-sm text-gray-600">{clickedLocation.address}</p>
-            </div>
-          </InfoWindow>
-        )}
-      </Map>
-    );
-  }
-  
+        return null;
+      }));
+      setStationMarkers(markers.filter(marker => marker !== null));
+    };
+
+    if (stations) fetchStationCoordinates();
+  }, [stations]);
+
+  return (
+    <Map
+      style={{ width: '100vw', height: '100vh' }}
+      defaultCenter={{ lat: 26.609, lng: -80.352 }}
+      defaultZoom={9.2}
+      gestureHandling={'greedy'}
+      disableDefaultUI={true}
+    >
+      {/* User location marker */}
+      {userCoordinates && (
+        <Marker position={userCoordinates} title="Your Location" icon={userLocationIcon} />
+      )}
+
+      {/* Shelter markers */}
+      {showShelters && SHELTERS.map((shelter, index) => (
+        <Marker
+          key={index}
+          position={shelter.position}
+          icon={shelterIcon}
+          onMouseOver={() => handleMouseOver(shelter)}
+          onMouseOut={handleMouseOut}
+          onClick={() => handleClick(shelter)}
+        />
+      ))}
+
+      {/* Food bank markers */}
+      {showFoodBanks && FOOD_BANKS.map((foodBank, index) => (
+        <Marker
+          key={index}
+          position={foodBank.position}
+          icon={foodBankIcon}
+          onMouseOver={() => handleMouseOver(foodBank)}
+          onMouseOut={handleMouseOut}
+          onClick={() => handleClick(foodBank)}
+        />
+      ))}
+
+      {/* Station markers */}
+      {showGasStations && stationMarkers.map((station, index) => (
+        <Marker
+          key={index}
+          position={station.position}
+          title={station.name}
+          icon={stationIcon}
+          onMouseOver={() => handleMouseOver(station)}
+          onMouseOut={handleMouseOut}
+          onClick={() => handleClick(station)}
+        />
+      ))}
+
+      {/* InfoWindow for hovered location (no close button) */}
+      {hoveredLocation && !clickedLocation && (
+        <InfoWindow position={hoveredLocation.position} options={{ disableAutoPan: true }}>
+          <div className="p-2">
+            <h3 className="font-bold text-lg mb-1">{hoveredLocation.name}</h3>
+            <p className="text-sm text-gray-600">{hoveredLocation.address}</p>
+          </div>
+        </InfoWindow>
+      )}
+
+      {/* InfoWindow for clicked location (with close button) */}
+      {clickedLocation && (
+        <InfoWindow position={clickedLocation.position} onCloseClick={handleCloseClick}>
+          <div className="p-2">
+            <h3 className="font-bold text-lg mb-1">{clickedLocation.name}</h3>
+            <p className="text-sm text-gray-600">{clickedLocation.address}</p>
+          </div>
+        </InfoWindow>
+      )}
+    </Map>
+  );
+}

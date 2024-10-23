@@ -14,7 +14,8 @@ function Page() {
   const [userCoordinates, setUserCoordinates] = useState(null);
   const [popupInfo, setPopupInfo] = useState(null);
   const [showShelters, setShowShelters] = useState(true);
-  const [showFoodBanks, setShowFoodBanks] = useState(true); // New state for showing food banks
+  const [showFoodBanks, setShowFoodBanks] = useState(true);
+  const [showGasStations, setShowGasStations] = useState(true); // New state for showing gas stations
   const [stations, setStations] = useState([]);
 
   useEffect(() => {
@@ -55,7 +56,8 @@ function Page() {
         popupInfo={popupInfo}
         setPopupInfo={setPopupInfo}
         showShelters={showShelters}
-        showFoodBanks={showFoodBanks} // Pass showFoodBanks state to the map
+        showFoodBanks={showFoodBanks}
+        showGasStations={showGasStations} // Pass showGasStations state to the map
         stations={stations}
       />
 
@@ -74,10 +76,19 @@ function Page() {
           <input
             type="checkbox"
             checked={showFoodBanks}
-            onChange={(e) => setShowFoodBanks(e.target.checked)} // New toggle for food banks
+            onChange={(e) => setShowFoodBanks(e.target.checked)}
             className="w-4 h-4 cursor-pointer"
           />
           <span className="text-sm font-medium">Show Food Banks</span>
+        </label>
+        <label className="flex items-center space-x-2 cursor-pointer mt-2">
+          <input
+            type="checkbox"
+            checked={showGasStations}
+            onChange={(e) => setShowGasStations(e.target.checked)} // New toggle for gas stations
+            className="w-4 h-4 cursor-pointer"
+          />
+          <span className="text-sm font-medium">Show Gas Stations</span>
         </label>
       </div>
     </div>
