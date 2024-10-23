@@ -48,7 +48,7 @@ function Page() {
   if (isLoading) return <BeatLoader cssOverride={style} />;
 
   return (
-    <main style={{ flex: 1, overflow: 'auto', height: '100vh' }} className="relative">
+    <div style={{ flex: 1, overflow: 'auto', height: '100vh' }} className="relative">
       <Stations setStations={setStations} userCoordinates={userCoordinates} />
       <GoogleMap
         userCoordinates={userCoordinates}
@@ -80,7 +80,7 @@ function Page() {
           <span className="text-sm font-medium">Show Food Banks</span>
         </label>
       </div>
-    </main>
+    </div>
   );
 }
 

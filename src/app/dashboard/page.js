@@ -144,7 +144,7 @@ function Page() {
 
   return (
     <div className="flex flex-col">
-      <div style={{ display: 'flex', height: 'calc(100vh - 60px)' }}>
+      <div style={{ display: 'flex', minHeight: '100%', height: 'calc(100vh - 60px)' }}>
         <Map
           id="map"
           mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
@@ -153,7 +153,7 @@ function Page() {
             longitude: -80.352,
             zoom: 9.24
           }}
-          style={{ width: '70vw', height: '70vw' }}
+          style={{ width: '70vw', height: '100%' }}
           mapStyle={isSatellite ? "mapbox://styles/mapbox/satellite-v9" : "mapbox://styles/mapbox/streets-v12"}
           interactiveLayerIds={['nhc-filled']}
           onMouseMove={onHover}

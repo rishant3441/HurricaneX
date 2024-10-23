@@ -45,6 +45,9 @@ export default function Stations({ setStations, userCoordinates }) {
   });
 
   useEffect(() => {
+    console.log(data)
+    console.log(loading)
+    console.log(error)
     if (data) {
       const stations = data.locationBySearchTerm.stations.results.map(station => ({
         name: station.name,
