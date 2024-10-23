@@ -1,3 +1,5 @@
+'use client';
+
 import { useQuery, gql } from "@apollo/client";
 import { useEffect } from "react";
 
@@ -54,11 +56,6 @@ export default function Stations({ setStations, userCoordinates }) {
 
   if (loading) {
     return <h2>Loading...</h2>;
-  }
-
-  if (error) {
-    console.error(error);
-    return null;
   }
 
   return null;
