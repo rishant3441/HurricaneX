@@ -61,37 +61,40 @@ export default function Dashboard() {
   };
 
   return (
-    <Box p={4}>
-      <Text fontSize="2xl" mb={4}>Dashboard</Text>
+    <Box p={4} bg="lightblue.50" borderRadius="lg" boxShadow="md">
+      <Text fontSize="2xl" mb={4} color="blue.700">Dashboard</Text>
       {user && (
-        <Box mb={4}>
-          <Text fontSize="lg">User Info</Text>
+        <Box mb={4} p={4} border="1px solid" borderColor="blue.200" borderRadius="md">
+          <Text fontSize="lg" color="blue.600">User Info</Text>
           <Text>Email: {user.email}</Text>
           <Text>
-            Password: {showPassword ? '********' : '••••••••'}
-            <Button ml={2} onClick={() => setShowPassword(!showPassword)}>
+            Password: {showPassword ? 'Password hidden for security' : '••••••••'}
+            <Button ml={2} onClick={() => setShowPassword(!showPassword)} colorScheme="blue">
               {showPassword ? 'Hide' : 'Show'}
             </Button>
           </Text>
         </Box>
       )}
-      <Box mb={4}>
-        <Text fontSize="lg">Change Password</Text>
+      <Box mb={4} p={4} border="1px solid" borderColor="blue.200" borderRadius="md">
+        <Text fontSize="lg" color="blue.600">Change Password</Text>
         <Stack spacing={3}>
           <Input
             type="password"
             placeholder="New Password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
+            focusBorderColor="blue.400"
           />
-          <Button onClick={handlePasswordChange}>Update Password</Button>
+          <Button onClick={handlePasswordChange} colorScheme="blue">
+            Update Password
+          </Button>
         </Stack>
       </Box>
-      <Box>
-        <Text fontSize="lg">Location</Text>
+      <Box p={4} border="1px solid" borderColor="blue.200" borderRadius="md">
+        <Text fontSize="lg" color="blue.600">Location</Text>
         {locationEnabled ? (
           <Text>
-            Location is enabled. Current location: {userCoordinates.lat}, {userCoordinates.lng}
+            Location is enabled. Current location: {userCoordinates?.lat}, {userCoordinates?.lng}
           </Text>
         ) : (
           <Text>Location is not enabled.</Text>
