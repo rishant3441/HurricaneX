@@ -10,23 +10,28 @@ export default function Dashboard() {
   const [newPassword, setNewPassword] = useState('');
   const [locationEnabled, setLocationEnabled] = useState(false);
   const [userCoordinates, setUserCoordinates] = useState(null);
+  const [userAddress, setUserAddress] = useState('');
   const [isGoogleUser, setIsGoogleUser] = useState(false);
   const toast = useToast();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
         setUser(user);
         setIsGoogleUser(user.providerData.some(provider => provider.providerId === 'google.com'));
+      }
     });
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setUserCoordinates({
+          const coordinates = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
-          });
+          };
+          setUserCoordinates(coordinates);
           setLocationEnabled(true);
+          reverseGeocode(coordinates);
         },
         (error) => {
           console.error('Error getting user location:', error);
@@ -37,6 +42,20 @@ export default function Dashboard() {
 
     return () => unsubscribe();
   }, []);
+
+  const reverseGeocode = async ({ lat, lng }) => {
+    try {
+      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`);
+      const data = await response.json();
+      if (data.results.length > 0) {
+        setUserAddress(data.results[0].formatted_address);
+      } else {
+        console.error('No results found for reverse geocoding.');
+      }
+    } catch (error) {
+      console.error('Error with reverse geocoding:', error);
+    }
+  };
 
   const handlePasswordChange = async () => {
     if (auth.currentUser) {
@@ -94,7 +113,7 @@ export default function Dashboard() {
         <Text fontSize="lg" color="blue.600">Location</Text>
         {locationEnabled ? (
           <Text>
-            Location is enabled. Current location: {userCoordinates?.lat}, {userCoordinates?.lng}
+            Location is enabled. Current location(approx.): {userAddress || `${userCoordinates?.lat}, ${userCoordinates?.lng}`}
           </Text>
         ) : (
           <Text>Location is not enabled.</Text>
