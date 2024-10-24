@@ -49,6 +49,7 @@ export default function Dashboard() {
           duration: 5000,
           isClosable: true,
         });
+        setNewPassword(''); 
       } catch (error) {
         toast({
           title: 'Error updating password.',
