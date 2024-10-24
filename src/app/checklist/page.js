@@ -40,7 +40,7 @@ function Page() {
           setChecklist(result.data().items || []);
         } else {
           await addData(user.uid, 'checklists', { items: checklist });
-          console.log('New checklist created for user:', user.uid);
+          console.log('New checklist created for user: ', user.uid);
         }
         setLoading(false);
       };
