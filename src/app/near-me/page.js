@@ -70,6 +70,7 @@ function Page() {
             onChange={(e) => setShowShelters(e.target.checked)}
             className="w-4 h-4 cursor-pointer"
           />
+          <span className="w-4 h-4 inline-block rounded-full" style={{ backgroundColor: '#FF0000', border: '2px solid #FFFFFF' }}></span>
           <span className="text-sm font-medium">Show Hurricane Shelters</span>
         </label>
         <label className="flex items-center space-x-2 cursor-pointer mt-2">
@@ -79,6 +80,7 @@ function Page() {
             onChange={(e) => setShowFoodBanks(e.target.checked)}
             className="w-4 h-4 cursor-pointer"
           />
+          <span className="w-4 h-4 inline-block rounded-full" style={{ backgroundColor: '#00FF00', border: '2px solid #FFFFFF' }}></span>
           <span className="text-sm font-medium">Show Food Banks</span>
         </label>
         <label className="flex items-center space-x-2 cursor-pointer mt-2">
@@ -88,6 +90,7 @@ function Page() {
             onChange={(e) => setShowGasStations(e.target.checked)} // New toggle for gas stations
             className="w-4 h-4 cursor-pointer"
           />
+          <span className="w-4 h-4 inline-block rounded-full" style={{ backgroundColor: '#8B4513', border: '2px solid #FFFFFF' }}></span>
           <span className="text-sm font-medium">Show Gas Stations</span>
         </label>
       </div>
