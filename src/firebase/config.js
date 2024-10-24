@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth, onAuthStateChanged, initializeAuth, indexedDBLocalPersistence, browserLocalPersistence } from "firebase/auth";
-import { addDoc, getFirestore } from "firebase/firestore";
+import { getAuth, signInWithEmailAndPassword, initializeAuth, indexedDBLocalPersistence } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -16,4 +16,14 @@ export const firebase_app = getApps().length === 0 ? initializeApp(firebaseConfi
 
 export const auth = initializeAuth(firebase_app, { persistence: [indexedDBLocalPersistence] });
 
-export const db = getFirestore(firebase_app)
+export const db = getFirestore(firebase_app);
+
+// Sign in function
+export const signIn = async (email, password) => {
+  try {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    return { result };
+  } catch (error) {
+    return { error };
+  }
+};
