@@ -152,6 +152,8 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
   const [clickedLocation, setClickedLocation] = useState(null);
   const hoverTimeout = useRef(null);
   const [stationMarkers, setStationMarkers] = useState([]);
+  const [initialCenter, setInitialCenter] = useState({ lat: 26.609, lng: -80.352 });
+  const [initialZoom, setInitialZoom] = useState(9.2);
 
   // Custom icon definitions
   const userLocationIcon = {
@@ -243,11 +245,19 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
     if (stations) fetchStationCoordinates();
   }, [stations]);
 
+  useEffect(() => {
+    if (userCoordinates) {
+      setInitialCenter(userCoordinates);
+      setInitialZoom(12);
+    }
+  }, [userCoordinates]);
+
   return (
     <Map
       style={{ width: '100vw', height: '100vh' }}
-      center={userCoordinates || { lat: 26.609, lng: -80.352 }} // Center on user location if available
-      zoom={userCoordinates ? 12 : 9.2} // Zoom in more if user location is available
+      //zoom={initialZoom}
+      defaultCenter={initialCenter}
+      defaultZoom={initialZoom}
       gestureHandling={'greedy'}
       disableDefaultUI={true}
     >
