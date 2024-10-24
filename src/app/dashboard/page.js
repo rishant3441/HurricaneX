@@ -36,7 +36,7 @@ export default function Dashboard() {
     }
 
     return () => unsubscribe();
-  }, [router]);
+  }, []);
 
   const handlePasswordChange = async () => {
     if (auth.currentUser) {
