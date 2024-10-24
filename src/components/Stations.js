@@ -55,7 +55,7 @@ export default function Stations({ setStations, userCoordinates }) {
         address: `${station.address.line1 || "not available"} ${station.address.locality || "not available"} ${station.address.region || "not available"} ${station.address.postalCode || "not available"} ${station.address.country || "not available"}`,
         prices: station.prices.map(price => ({
           fuelProduct: price.fuelProduct || "not available",
-          price: price.credit.price || "not available"
+          price: price.credit.price
         })),
         hasGas: (station.emergencyStatus && station.emergencyStatus.hasGas && station.emergencyStatus.hasGas.reportStatus) || "not available"
       }));
