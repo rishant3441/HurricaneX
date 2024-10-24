@@ -29,6 +29,17 @@ query LocationBySearchTerm($brandId: Int, $cursor: String, $fuel: Int, $lat: Flo
           region
         }
         name
+        prices {
+          fuelProduct
+          credit {
+            price
+          }
+        }
+        emergencyStatus {
+          hasGas {
+            reportStatus
+          }
+        }
       }
     }
   }
@@ -37,32 +48,41 @@ query LocationBySearchTerm($brandId: Int, $cursor: String, $fuel: Int, $lat: Flo
 
 export default function Stations({ setStations, userCoordinates }) {
 
-  if (!userCoordinates || userCoordinates.lat == null || userCoordinates.lng == null) {
-      const { data, loading, error } = useQuery(QUERY, {
-        variables: {
-          lat: 26.7056,
-          lng: -80.0364,
-          search: "", // Default search term
-        },
-      });
-
-      useEffect(() => {
-        console.log(data)
-        console.log(loading)
-        console.log(error)
-        if (data) {
-          const stations = data.locationBySearchTerm.stations.results.map(station => ({
-            name: station.name,
-            address: `${station.address.line1} ${station.address.locality} ${station.address.region} ${station.address.postalCode} ${station.address.country}`
-          }));
-          setStations(stations);
-        }
-      }, [data, setStations]);
-
-      return <h1 style={{ color: 'white', backgroundColor: 'red', padding: '10px', textAlign: 'center', fontSize: '20px', borderRadius: '8px' }}>
-        Error: Missing current location, local gas stations can not be shown. Please enable location access </h1>;
+  const processStationData = (data) => {
+    if (data && data.locationBySearchTerm && data.locationBySearchTerm.stations) {
+      const stations = data.locationBySearchTerm.stations.results.map(station => ({
+        name: station.name || "not available",
+        address: `${station.address.line1 || "not available"} ${station.address.locality || "not available"} ${station.address.region || "not available"} ${station.address.postalCode || "not available"} ${station.address.country || "not available"}`,
+        prices: station.prices.map(price => ({
+          fuelProduct: price.fuelProduct || "not available",
+          price: price.credit.price || "not available"
+        })),
+        hasGas: (station.emergencyStatus && station.emergencyStatus.hasGas && station.emergencyStatus.hasGas.reportStatus) || "not available"
+      }));
+      setStations(stations);
     }
-  
+  };
+
+  if (!userCoordinates || userCoordinates.lat == null || userCoordinates.lng == null) {
+    const { data, loading, error } = useQuery(QUERY, {
+      variables: {
+        lat: 26.7056,
+        lng: -80.0364,
+        search: "", // Default search term
+      },
+    });
+
+    useEffect(() => {
+      console.log(data)
+      console.log(loading)
+      console.log(error)
+      processStationData(data);
+    }, [data, setStations]);
+
+    return <h1 style={{ color: 'white', backgroundColor: 'red', padding: '10px', textAlign: 'center', fontSize: '20px', borderRadius: '8px' }}>
+      Error: Missing current location, local gas stations can not be shown. Please enable location access </h1>;
+  }
+
   const { data, loading, error } = useQuery(QUERY, {
     variables: {
       lat: userCoordinates.lat,
@@ -75,13 +95,7 @@ export default function Stations({ setStations, userCoordinates }) {
     console.log(data)
     console.log(loading)
     console.log(error)
-    if (data) {
-      const stations = data.locationBySearchTerm.stations.results.map(station => ({
-        name: station.name,
-        address: `${station.address.line1} ${station.address.locality} ${station.address.region} ${station.address.postalCode} ${station.address.country}`
-      }));
-      setStations(stations);
-    }
+    processStationData(data);
   }, [data, setStations]);
 
   if (loading) {

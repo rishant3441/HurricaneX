@@ -190,6 +190,14 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
     scale: 10
   };
 
+  // Utility function to format fuel product names
+  const formatFuelProductName = (name) => {
+    return name
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   // Combined handler for hover over any location (shelter, food bank, station)
   const handleMouseOver = (location) => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
@@ -223,7 +231,13 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
       const markers = await Promise.all(stations.map(async (station) => {
         const location = await geocodeAddress(station.address);
         if (location) {
-          return { position: location, name: station.name, address: station.address };
+          return {
+            position: location,
+            name: station.name,
+            address: station.address,
+            prices: station.prices,
+            hasGas: station.hasGas
+          };
         }
         return null;
       }));
@@ -289,6 +303,19 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
           <div className="p-2">
             <h3 className="font-bold text-lg mb-1">{hoveredLocation.name}</h3>
             <p className="text-sm text-gray-600">{hoveredLocation.address}</p>
+            {hoveredLocation.prices && (
+              <div>
+                <h4 className="font-bold text-md mb-1">Prices:</h4>
+                <ul>
+                  {hoveredLocation.prices.map((price, index) => (
+                    <li key={index}>{formatFuelProductName(price.fuelProduct)}: {price.price ? `$${price.price}` : 'Not Available'}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {hoveredLocation.hasGas !== undefined && (
+              <p className="text-sm text-gray-600 font-bold">Has Gas: {hoveredLocation.hasGas ? 'Yes' : 'No'}</p>
+            )}
           </div>
         </InfoWindow>
       )}
@@ -299,6 +326,19 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
           <div className="p-2">
             <h3 className="font-bold text-lg mb-1">{clickedLocation.name}</h3>
             <p className="text-sm text-gray-600">{clickedLocation.address}</p>
+            {clickedLocation.prices && (
+              <div>
+                <h4 className="font-bold text-md mb-1">Prices:</h4>
+                <ul>
+                  {clickedLocation.prices.map((price, index) => (
+                    <li key={index}>{formatFuelProductName(price.fuelProduct)}: {price.price ? `$${price.price}` : 'Not Available'}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {clickedLocation.hasGas !== undefined && (
+              <p className="text-sm text-gray-600 font-bold">Has Gas: {clickedLocation.hasGas ? 'Yes' : 'No'}</p>
+            )}
           </div>
         </InfoWindow>
       )}
