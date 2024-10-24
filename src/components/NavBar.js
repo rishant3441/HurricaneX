@@ -294,7 +294,7 @@ const MobileNavItem = ({ label, children, href }) => {
 const NAV_ITEMS = [
   {
     label: 'Weather',
-    href: '/dashboard'
+    href: '/weather'
   },
   {
     label: 'Tips',
