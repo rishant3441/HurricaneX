@@ -182,10 +182,8 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
   };
 
   const stationIcon = {
-    url: '/fuel-station.png',// Use 'url' instead of 'path'
-    scaledSize: new google.maps.Size(36, 36), // Adjust size as needed
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(16, 16) // Center of the image
+    url: '/fuel-station.png', // Path to your custom marker image
+    scaledSize: new google.maps.Size(32, 32), // Adjust the size as needed
   };
 
   // Utility function to format fuel product names
@@ -248,8 +246,8 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
   return (
     <Map
       style={{ width: '100vw', height: '100vh' }}
-      defaultCenter={{ lat: 26.609, lng: -80.352 }}
-      defaultZoom={9.2}
+      center={userCoordinates || { lat: 26.609, lng: -80.352 }} // Center on user location if available
+      zoom={userCoordinates ? 12 : 9.2} // Zoom in more if user location is available
       gestureHandling={'greedy'}
       disableDefaultUI={true}
     >

@@ -90,7 +90,7 @@ function Page() {
             onChange={(e) => setShowGasStations(e.target.checked)} // New toggle for gas stations
             className="w-4 h-4 cursor-pointer"
           />
-          <span className="w-4 h-4 inline-block rounded-full" style={{ backgroundColor: '#8B4513', border: '2px solid #FFFFFF' }}></span>
+          <img src="/fuel-station.png" alt="Gas Station Icon" className="w-4 h-4" />
           <span className="text-sm font-medium">Show Gas Stations</span>
         </label>
       </div>
