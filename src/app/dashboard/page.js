@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { auth } from '@/firebase/config';
 import { updatePassword } from 'firebase/auth';
 import { Box, Button, Input, Stack, Text, useToast } from '@chakra-ui/react';
@@ -13,16 +12,11 @@ export default function Dashboard() {
   const [userCoordinates, setUserCoordinates] = useState(null);
   const [isGoogleUser, setIsGoogleUser] = useState(false);
   const toast = useToast();
-  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
         setUser(user);
         setIsGoogleUser(user.providerData.some(provider => provider.providerId === 'google.com'));
-      } else {
-        router.push('/sign-in'); // Redirect to sign-in page if not authenticated
-      }
     });
 
     if (navigator.geolocation) {

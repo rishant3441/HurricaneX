@@ -1,106 +1,16 @@
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '../config';
-import { Box, Button, Input, Stack, Text, useToast } from '@chakra-ui/react';
+import { auth } from "../config";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
-export default function SignUp() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const toast = useToast();
-  const router = useRouter();
+// Function to sign up a user with email and password
+export default async function signUp(email, password) {
+  let result = null, // Variable to store the sign-up result
+    error = null; // Variable to store any error that occurs
 
-  const handleSignUp = async () => {
-    setLoading(true);
-    let result = null;
-    let error = null;
+  try {
+    result = await createUserWithEmailAndPassword(auth, email, password); // Sign up with email and password
+  } catch (e) {
+    error = e; // Catch and store any error that occurs during sign-up
+  }
 
-    try {
-      result = await createUserWithEmailAndPassword(auth, email, password);
-    } catch (e) {
-      error = e;
-    }
-
-    setLoading(false);
-
-    if (error) {
-      toast({
-        title: 'Error signing up.',
-        description: error.message,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
-    } else {
-      toast({
-        title: 'Signed up successfully.',
-        description: 'You have been signed up.',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
-      router.push('/dashboard'); // Redirect to dashboard after successful sign-up
-    }
-  };
-
-  const handleGoogleSignUp = async () => {
-    setLoading(true);
-    const provider = new GoogleAuthProvider();
-    let result = null;
-    let error = null;
-
-    try {
-      result = await signInWithPopup(auth, provider);
-    } catch (e) {
-      error = e;
-    }
-
-    setLoading(false);
-
-    if (error) {
-      toast({
-        title: 'Error signing up with Google.',
-        description: error.message,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
-    } else {
-      toast({
-        title: 'Signed up successfully with Google.',
-        description: 'You have been signed up.',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
-      router.push('/dashboard'); // Redirect to dashboard after successful Google sign-up
-    }
-  };
-
-  return (
-    <Box p={4}>
-      <Text fontSize="2xl" mb={4}>Sign Up</Text>
-      <Stack spacing={3}>
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button onClick={handleSignUp} isLoading={loading}>
-          Sign Up
-        </Button>
-        <Button onClick={handleGoogleSignUp} isLoading={loading}>
-          Sign Up with Google
-        </Button>
-      </Stack>
-    </Box>
-  );
-}
+  return { result, error }; // Return the result and error
+};

@@ -1,88 +1,16 @@
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { signIn, signInWithGoogle } from '../config';
-import { Box, Button, Input, Stack, Text, useToast } from '@chakra-ui/react';
+import { auth } from "../config";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
-export default function SignIn() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const toast = useToast();
-  const router = useRouter();
+// Function to sign in with email and password
+export default async function signIn(email, password) {
+  let result = null, // Variable to store the sign-in result
+    error = null; // Variable to store any error that occurs
 
-  const handleSignIn = async () => {
-    setLoading(true);
-    const { result, error } = await signIn(email, password);
-    setLoading(false);
+  try {
+    result = await signInWithEmailAndPassword(auth, email, password); // Sign in with email and password
+  } catch (e) {
+    error = e; // Catch and store any error that occurs during sign-in
+  }
 
-    if (error) {
-      toast({
-        title: 'Error signing in.',
-        description: error.message,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
-    } else {
-      toast({
-        title: 'Signed in successfully.',
-        description: 'You have been signed in.',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
-      router.push('/dashboard'); // Redirect to dashboard after successful sign-in
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    const { result, error } = await signInWithGoogle();
-    setLoading(false);
-
-    if (error) {
-      toast({
-        title: 'Error signing in with Google.',
-        description: error.message,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
-    } else {
-      toast({
-        title: 'Signed in successfully with Google.',
-        description: 'You have been signed in.',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
-      router.push('/dashboard'); // Redirect to dashboard after successful Google sign-in
-    }
-  };
-
-  return (
-    <Box p={4}>
-      <Text fontSize="2xl" mb={4}>Sign In</Text>
-      <Stack spacing={3}>
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button onClick={handleSignIn} isLoading={loading}>
-          Sign In
-        </Button>
-        <Button onClick={handleGoogleSignIn} isLoading={loading}>
-          Sign In with Google
-        </Button>
-      </Stack>
-    </Box>
-  );
-}
+  return { result, error }; // Return the result and error
+};

@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, initializeAuth, indexedDBLocalPersistence } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getAuth, onAuthStateChanged, initializeAuth, indexedDBLocalPersistence, browserLocalPersistence } from "firebase/auth";
+import { addDoc, getFirestore } from "firebase/firestore";
+
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -17,24 +18,3 @@ export const firebase_app = getApps().length === 0 ? initializeApp(firebaseConfi
 export const auth = initializeAuth(firebase_app, { persistence: [indexedDBLocalPersistence] });
 
 export const db = getFirestore(firebase_app);
-
-// Sign in function
-export const signIn = async (email, password) => {
-  try {
-    const result = await signInWithEmailAndPassword(auth, email, password);
-    return { result };
-  } catch (error) {
-    return { error };
-  }
-};
-
-// Google sign-in function
-export const signInWithGoogle = async () => {
-  const provider = new GoogleAuthProvider();
-  try {
-    const result = await signInWithPopup(auth, provider);
-    return { result };
-  } catch (error) {
-    return { error };
-  }
-};
