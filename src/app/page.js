@@ -76,14 +76,6 @@ export default function EnhancedLandingPage() {
                 onClick={() => router.push(auth.currentUser ? "/dashboard" : "/sign-up")}>
                 Get started
               </Button>
-              <Button
-                rounded={'full'}
-                size={'lg'}
-                fontWeight={'normal'}
-                px={6}
-                leftIcon={<PlayIcon h={4} w={4} color={'gray.300'} />}>
-                How It Works
-              </Button>
             </Stack>
           </Stack>
           <Flex
@@ -262,10 +254,10 @@ const FeatureCard = ({ icon, title, description }) => {
         p={6}>
         <VStack spacing={4} align={'center'}>
           <Icon as={icon} w={10} h={10} color={'blue.400'} />
-          <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
+          <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500} textAlign="center">
             {title}
           </Heading>
-          <Text color={'gray.500'} align={'center'}>
+          <Text color={'gray.500'} textAlign="center">
             {description}
           </Text>
         </VStack>
