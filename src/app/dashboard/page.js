@@ -14,13 +14,13 @@ function Page() {
   const [data, setData] = useState(null);
   const [hoverInfo, setHoverInfo] = useState(null);
   const [selectedInfo, setSelectedInfo] = useState(null);
-  const [showAlerts, setShowAlerts] = useState(true); // State for toggling alerts
-  const [isControlOpen, setControlOpen] = useState(false); // State for collapsible control
-  const [userCoordinates, setUserCoordinates] = useState(null); // State for user coordinates
-  const [popupInfo, setPopupInfo] = useState(null); // State for popup info
+  const [showAlerts, setShowAlerts] = useState(true); 
+  const [isControlOpen, setControlOpen] = useState(false); 
+  const [userCoordinates, setUserCoordinates] = useState(null); 
+  const [popupInfo, setPopupInfo] = useState(null); 
   const [nextRadGoes, setNextRadGoes] = useState(false);
   const [nextRadP24H, setnextRadP24H] = useState(false);
-  const [isSatellite, setIsSatellite] = useState(false); // State for map style
+  const [isSatellite, setIsSatellite] = useState(false); 
 
   useEffect(() => {
     if (user == null) router.push("/sign-in");
@@ -76,9 +76,9 @@ function Page() {
     id: 'nhc-filled',
     type: 'fill',
     paint: {
-      'fill-opacity': 0.3, // Adjust opacity to make polygons more transparent
+      'fill-opacity': 0.3,
       'fill-color': '#FF0000',
-      'fill-outline-color': '#000000' // Add an outline color to distinguish overlapping polygons
+      'fill-outline-color': '#000000'
     }
   };
 
@@ -93,7 +93,6 @@ function Page() {
     textDecoration: 'underline'
   };
 
-  // Custom marker style
   const markerStyle = {
     width: '20px',
     height: '20px',
@@ -154,17 +153,15 @@ function Page() {
               <Layer {...layerStyle} />
             </Source>
           )}
-          {/* Add Marker for User Location */}
           {userCoordinates && (
             <Marker
               latitude={userCoordinates.latitude}
               longitude={userCoordinates.longitude}
               onClick={() => setPopupInfo(userCoordinates)}
             >
-              <div style={markerStyle}></div>
+              <div style={markerStyle} title="Your Location"></div>
             </Marker>
           )}
-          {/* Render Popup if popupInfo is set */}
           {popupInfo && (
             <Popup
               latitude={popupInfo.latitude}
@@ -179,7 +176,6 @@ function Page() {
               </div>
             </Popup>
           )}
-          {/* Collapsible control */}
           <div style={{
             position: 'absolute',
             top: '10px',
@@ -194,13 +190,14 @@ function Page() {
           }}>
             <button
               onClick={() => setControlOpen(!isControlOpen)}
-              style={{ width: '100%', marginBottom: '5px', padding: '5px', border: 'none', backgroundColor: '#007bff', color: '#ffffff', borderRadius: '4px' }}
+              style={{ width: '100%', marginBottom: '5px', padding: '5px', border: 'none', backgroundColor: '#007bff', color: '#ffffff', borderRadius: '4px', cursor: 'pointer' }}
+              title="Click to toggle control panel"
             >
               {isControlOpen ? 'Hide Controls' : 'Show Controls'}
             </button>
             {isControlOpen && (
               <div>
-                <div>
+                <div title="Check to view weather alerts on the map">
                   <label>
                     <input
                       type="checkbox"
@@ -210,7 +207,7 @@ function Page() {
                     Show Alerts
                   </label>
                 </div>
-                <div>
+                <div title="Check to see satellite imagery on the map">
                   <label>
                     <input
                       type="checkbox"
@@ -220,7 +217,7 @@ function Page() {
                     Show Satellite Imagery
                   </label>
                 </div>
-                <div>
+                <div title="Check to see 24-hour precipitation data on the map">
                   <label>
                     <input
                       type="checkbox"
@@ -230,7 +227,7 @@ function Page() {
                     Show 24-Hour Precipitation
                   </label>
                 </div>
-                <div>
+                <div title="Check to toggle satellite view of the map">
                   <label>
                     <input
                       type="checkbox"
