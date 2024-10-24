@@ -8,10 +8,10 @@ import { Box, Button, Input, Stack, Text, useToast } from '@chakra-ui/react';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [locationEnabled, setLocationEnabled] = useState(false);
   const [userCoordinates, setUserCoordinates] = useState(null);
+  const [isGoogleUser, setIsGoogleUser] = useState(false);
   const toast = useToast();
   const router = useRouter();
 
@@ -19,6 +19,7 @@ export default function Dashboard() {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setUser(user);
+        setIsGoogleUser(user.providerData.some(provider => provider.providerId === 'google.com'));
       } else {
         router.push('/sign-in'); // Redirect to sign-in page if not authenticated
       }
@@ -73,29 +74,27 @@ export default function Dashboard() {
         <Box mb={4} p={4} border="1px solid" borderColor="blue.200" borderRadius="md">
           <Text fontSize="lg" color="blue.600">User Info</Text>
           <Text>Email: {user.email}</Text>
-          <Text>
-            Password: {showPassword ? 'Password hidden for security' : '••••••••'}
-            <Button ml={2} onClick={() => setShowPassword(!showPassword)} colorScheme="blue">
-              {showPassword ? 'Hide' : 'Show'}
-            </Button>
-          </Text>
+          <Text>Password: •••••••• (hidden due to security reasons)</Text>
+          <Text>Signed in with Google: {isGoogleUser ? 'Yes' : 'No'}</Text>
         </Box>
       )}
-      <Box mb={4} p={4} border="1px solid" borderColor="blue.200" borderRadius="md">
-        <Text fontSize="lg" color="blue.600">Change Password</Text>
-        <Stack spacing={3}>
-          <Input
-            type="password"
-            placeholder="New Password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            focusBorderColor="blue.400"
-          />
-          <Button onClick={handlePasswordChange} colorScheme="blue">
-            Update Password
-          </Button>
-        </Stack>
-      </Box>
+      {!isGoogleUser && (
+        <Box mb={4} p={4} border="1px solid" borderColor="blue.200" borderRadius="md">
+          <Text fontSize="lg" color="blue.600">Change Password</Text>
+          <Stack spacing={3}>
+            <Input
+              type="password"
+              placeholder="New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              focusBorderColor="blue.400"
+            />
+            <Button onClick={handlePasswordChange} colorScheme="blue">
+              Update Password
+            </Button>
+          </Stack>
+        </Box>
+      )}
       <Box p={4} border="1px solid" borderColor="blue.200" borderRadius="md">
         <Text fontSize="lg" color="blue.600">Location</Text>
         {locationEnabled ? (
