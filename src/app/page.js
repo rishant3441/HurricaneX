@@ -139,17 +139,17 @@ export default function EnhancedLandingPage() {
               <FeatureCard
                 icon={FaCloud}
                 title="Real-time Tracking"
-                description="Get live updates on hurricane trajectories with our advanced satellite API."
+                description="Get live updates on local weathers with National Weather Service warnings"
               />
               <FeatureCard
                 icon={FaShieldAlt}
-                title="Supply Finder"
-                description="Locate essential supplies in your area, from food and water to gasoline."
+                title="Locate Necessary Buildings"
+                description="Easily find nearby gas stations, shelters, and food banks"
               />
               <FeatureCard
                 icon={FaBullhorn}
                 title="Emergency Alerts"
-                description="Receive timely notifications about approaching hurricanes and critical updates."
+                description="View statewide updates regarding hurricanes and other critical situations"
               />
               <FeatureCard
                 icon={FaLightbulb}
@@ -216,15 +216,6 @@ export default function EnhancedLandingPage() {
                 _hover={{ bg: 'blue.500' }}
                 onClick={() => router.push(auth.currentUser ? "/dashboard" : "/sign-up")}>
                 Sign Up Now
-              </Button>
-              <Button
-                rounded={'full'}
-                size={'lg'}
-                fontWeight={'normal'}
-                px={6}
-                variant={'outline'}
-                colorScheme={'blue'}>
-                Learn More
               </Button>
             </HStack>
           </Stack>
