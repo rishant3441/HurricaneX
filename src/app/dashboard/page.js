@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { auth } from '@/firebase/config';
 import { updatePassword } from 'firebase/auth';
 import { Box, Button, Input, Stack, Text, useToast } from '@chakra-ui/react';
@@ -13,12 +14,15 @@ export default function Dashboard() {
   const [userAddress, setUserAddress] = useState('');
   const [isGoogleUser, setIsGoogleUser] = useState(false);
   const toast = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setUser(user);
         setIsGoogleUser(user.providerData.some(provider => provider.providerId === 'google.com'));
+      } else {
+        router.push('/sign-in'); // Redirect to sign-in page if not authenticated
       }
     });
 
@@ -41,7 +45,7 @@ export default function Dashboard() {
     }
 
     return () => unsubscribe();
-  }, []);
+  }, [router]);
 
   const reverseGeocode = async ({ lat, lng }) => {
     try {
@@ -113,10 +117,12 @@ export default function Dashboard() {
         <Text fontSize="lg" color="blue.600">Location</Text>
         {locationEnabled ? (
           <Text>
-            Location is enabled. Current location(approx.): {userAddress || `${userCoordinates?.lat}, ${userCoordinates?.lng}`}
+            Location is enabled. Current location (approx.): {userAddress || `${userCoordinates?.lat}, ${userCoordinates?.lng}`}
           </Text>
         ) : (
-          <Text>Location is not enabled.</Text>
+          <Text>
+            Location is not enabled.
+          </Text>
         )}
       </Box>
     </Box>

@@ -76,14 +76,6 @@ export default function EnhancedLandingPage() {
                 onClick={() => router.push(auth.currentUser ? "/dashboard" : "/sign-up")}>
                 Get started
               </Button>
-              <Button
-                rounded={'full'}
-                size={'lg'}
-                fontWeight={'normal'}
-                px={6}
-                leftIcon={<PlayIcon h={4} w={4} color={'gray.300'} />}>
-                How It Works
-              </Button>
             </Stack>
           </Stack>
           <Flex
@@ -139,17 +131,17 @@ export default function EnhancedLandingPage() {
               <FeatureCard
                 icon={FaCloud}
                 title="Real-time Tracking"
-                description="Get live updates on hurricane trajectories with our advanced satellite API."
+                description="Get live updates on local weathers with National Weather Service warnings"
               />
               <FeatureCard
                 icon={FaShieldAlt}
-                title="Supply Finder"
-                description="Locate essential supplies in your area, from food and water to gasoline."
+                title="Locate Necessary Buildings"
+                description="Easily find nearby gas stations, shelters, and food banks"
               />
               <FeatureCard
                 icon={FaBullhorn}
                 title="Emergency Alerts"
-                description="Receive timely notifications about approaching hurricanes and critical updates."
+                description="View statewide updates regarding hurricanes and other critical situations"
               />
               <FeatureCard
                 icon={FaLightbulb}
@@ -217,15 +209,6 @@ export default function EnhancedLandingPage() {
                 onClick={() => router.push(auth.currentUser ? "/dashboard" : "/sign-up")}>
                 Sign Up Now
               </Button>
-              <Button
-                rounded={'full'}
-                size={'lg'}
-                fontWeight={'normal'}
-                px={6}
-                variant={'outline'}
-                colorScheme={'blue'}>
-                Learn More
-              </Button>
             </HStack>
           </Stack>
         </Container>
@@ -271,10 +254,10 @@ const FeatureCard = ({ icon, title, description }) => {
         p={6}>
         <VStack spacing={4} align={'center'}>
           <Icon as={icon} w={10} h={10} color={'blue.400'} />
-          <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
+          <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500} textAlign="center">
             {title}
           </Heading>
-          <Text color={'gray.500'} align={'center'}>
+          <Text color={'gray.500'} textAlign="center">
             {description}
           </Text>
         </VStack>
