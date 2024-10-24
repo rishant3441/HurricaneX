@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, initializeAuth, indexedDBLocalPersistence } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, initializeAuth, indexedDBLocalPersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -22,6 +22,17 @@ export const db = getFirestore(firebase_app);
 export const signIn = async (email, password) => {
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
+    return { result };
+  } catch (error) {
+    return { error };
+  }
+};
+
+// Google sign-in function
+export const signInWithGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+  try {
+    const result = await signInWithPopup(auth, provider);
     return { result };
   } catch (error) {
     return { error };

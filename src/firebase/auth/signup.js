@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/config';
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { auth } from '../config';
 import { Box, Button, Input, Stack, Text, useToast } from '@chakra-ui/react';
 
 export default function SignUp() {
@@ -44,6 +44,40 @@ export default function SignUp() {
     }
   };
 
+  const handleGoogleSignUp = async () => {
+    setLoading(true);
+    const provider = new GoogleAuthProvider();
+    let result = null;
+    let error = null;
+
+    try {
+      result = await signInWithPopup(auth, provider);
+    } catch (e) {
+      error = e;
+    }
+
+    setLoading(false);
+
+    if (error) {
+      toast({
+        title: 'Error signing up with Google.',
+        description: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: 'Signed up successfully with Google.',
+        description: 'You have been signed up.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+      router.push('/dashboard'); // Redirect to dashboard after successful Google sign-up
+    }
+  };
+
   return (
     <Box p={4}>
       <Text fontSize="2xl" mb={4}>Sign Up</Text>
@@ -62,6 +96,9 @@ export default function SignUp() {
         />
         <Button onClick={handleSignUp} isLoading={loading}>
           Sign Up
+        </Button>
+        <Button onClick={handleGoogleSignUp} isLoading={loading}>
+          Sign Up with Google
         </Button>
       </Stack>
     </Box>

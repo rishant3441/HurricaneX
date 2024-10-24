@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signIn } from '../config';
+import { signIn, signInWithGoogle } from '../config';
 import { Box, Button, Input, Stack, Text, useToast } from '@chakra-ui/react';
 
 export default function SignIn() {
@@ -35,6 +35,31 @@ export default function SignIn() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    const { result, error } = await signInWithGoogle();
+    setLoading(false);
+
+    if (error) {
+      toast({
+        title: 'Error signing in with Google.',
+        description: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: 'Signed in successfully with Google.',
+        description: 'You have been signed in.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+      router.push('/dashboard'); // Redirect to dashboard after successful Google sign-in
+    }
+  };
+
   return (
     <Box p={4}>
       <Text fontSize="2xl" mb={4}>Sign In</Text>
@@ -53,6 +78,9 @@ export default function SignIn() {
         />
         <Button onClick={handleSignIn} isLoading={loading}>
           Sign In
+        </Button>
+        <Button onClick={handleGoogleSignIn} isLoading={loading}>
+          Sign In with Google
         </Button>
       </Stack>
     </Box>
