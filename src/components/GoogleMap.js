@@ -182,12 +182,10 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
   };
 
   const stationIcon = {
-    path: google.maps.SymbolPath.CIRCLE,
-    fillColor: '#8B4513', // Brown color
-    fillOpacity: 0.8,
-    strokeColor: '#FFFFFF',
-    strokeWeight: 2,
-    scale: 10
+    url: '/fuel-station.png',// Use 'url' instead of 'path'
+    scaledSize: new google.maps.Size(36, 36), // Adjust size as needed
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(16, 16) // Center of the image
   };
 
   // Utility function to format fuel product names
