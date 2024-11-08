@@ -314,7 +314,7 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
                 <h4 className="font-bold text-md mb-1">Prices:</h4>
                 <ul>
                   {hoveredLocation.prices.map((price, index) => (
-                    <li key={index}>{formatFuelProductName(price.fuelProduct)}: {price.price ? `$${price.price}` : 'Not Available'}</li>
+                    <li key={index}>{formatFuelProductName(price.fuelProduct)}: {price.price ? `$${price.price}` : 'Data Not Available'}</li>
                   ))}
                 </ul>
               </div>
@@ -337,7 +337,7 @@ export default function GoogleMap({ userCoordinates, popupInfo, setPopupInfo, sh
                 <h4 className="font-bold text-md mb-1">Prices:</h4>
                 <ul>
                   {clickedLocation.prices.map((price, index) => (
-                    <li key={index}>{formatFuelProductName(price.fuelProduct)}: {price.price ? `$${price.price}` : 'Not Available'}</li>
+                    <li key={index}>{formatFuelProductName(price.fuelProduct)}: {price.price ? `$${price.price}` : 'Data Not Available'}</li>
                   ))}
                 </ul>
               </div>
